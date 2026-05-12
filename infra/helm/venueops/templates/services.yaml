@@ -1,0 +1,23 @@
+{{- range $name, $svc := .Values.services }}
+{{- if and $svc.enabled (ne $svc.kind "worker") }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: venueops-{{ $name | kebabcase }}
+  labels:
+    app.kubernetes.io/name: venueops
+    app.kubernetes.io/component: {{ $name | kebabcase }}
+    app.kubernetes.io/part-of: venueops-platform
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: venueops
+    app.kubernetes.io/component: {{ $name | kebabcase }}
+  ports:
+    - name: http
+      port: {{ $svc.servicePort }}
+      targetPort: http
+      protocol: TCP
+---
+{{- end }}
+{{- end }}

@@ -1,0 +1,53 @@
+global:
+  environment: prod
+  imageRegistry: ghcr.io/your-org
+  imageTag: prod
+  imagePullPolicy: IfNotPresent
+  config:
+    logLevel: INFO
+    appEnv: prod
+    serviceBusNamespace: venueops-prod-sbus
+    eventHubNamespace: venueops-prod-eh
+    eventHubName: device-logs
+    serviceBusQueueName: platform-jobs
+    keyVaultName: venueops-prod-kv
+
+ingress:
+  host: venueops.example.com
+
+services:
+  web:
+    replicaCount: 3
+    autoscaling:
+      minReplicas: 3
+      maxReplicas: 10
+
+  api:
+    replicaCount: 3
+    autoscaling:
+      minReplicas: 3
+      maxReplicas: 15
+
+  ingestionApi:
+    replicaCount: 3
+    autoscaling:
+      minReplicas: 3
+      maxReplicas: 20
+
+  logProcessor:
+    replicaCount: 2
+    keda:
+      minReplicas: 2
+      maxReplicas: 25
+
+  videoProcessor:
+    replicaCount: 2
+    keda:
+      minReplicas: 2
+      maxReplicas: 15
+
+  notificationWorker:
+    replicaCount: 2
+    keda:
+      minReplicas: 2
+      maxReplicas: 20

@@ -1,0 +1,58 @@
+name: Helm Validate
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+    paths:
+      - "infra/helm/**"
+      - ".github/workflows/helm-validate.yml"
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - "infra/helm/**"
+      - ".github/workflows/helm-validate.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  helm-validate:
+    name: Helm lint and template
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
+
+      - name: Helm lint
+        run: |
+          helm lint infra/helm/venueops
+
+      - name: Helm template dev
+        run: |
+          mkdir -p docs/evidence
+          helm template venueops infra/helm/venueops \
+            --values infra/helm/venueops/values-dev.yaml \
+            > docs/evidence/helm-template-dev.yaml
+
+      - name: Helm template prod
+        run: |
+          helm template venueops infra/helm/venueops \
+            --values infra/helm/venueops/values-prod.yaml \
+            > docs/evidence/helm-template-prod.yaml
+
+      - name: Upload Helm evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: helm-evidence
+          path: |
+            docs/evidence/helm-template-dev.yaml
+            docs/evidence/helm-template-prod.yaml

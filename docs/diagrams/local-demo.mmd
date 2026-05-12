@@ -1,0 +1,9 @@
+flowchart LR
+  Web[Web dashboard] --> API[Backend API]
+  API --> SB[Mock Service Bus file queue]
+  SB --> Notify[Notification worker]
+  SB --> Video[Video worker]
+
+  Device[Sample device log] --> Ingestion[Device ingestion API]
+  Ingestion --> EH[Mock Event Hub file queue]
+  EH --> LogWorker[Log processor worker]

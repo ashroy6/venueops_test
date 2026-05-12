@@ -1,0 +1,15 @@
+VenueOps Helm chart deployed.
+
+Local render command:
+
+  helm template venueops infra/helm/venueops --values infra/helm/venueops/values-dev.yaml
+
+Production deployment example:
+
+  helm upgrade --install venueops infra/helm/venueops \
+    --namespace venueops \
+    --create-namespace \
+    --values infra/helm/venueops/values-prod.yaml \
+    --set global.imageRegistry=<acr-name>.azurecr.io \
+    --set global.imageTag=<git-sha> \
+    --set global.workloadIdentity.clientId=<managed-identity-client-id>

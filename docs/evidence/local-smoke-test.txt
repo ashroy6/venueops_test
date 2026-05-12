@@ -1,0 +1,41 @@
+# Local Smoke Test Evidence
+Generated at: 2026-05-12T13:26:56Z
+
+Running VenueOps smoke tests...
+
+Checking web dashboard: http://localhost:3000/health.html
+PASSED: web dashboard
+Checking backend API health: http://localhost:8000/health
+PASSED: backend API health
+Checking ingestion API health: http://localhost:8001/health
+PASSED: ingestion API health
+Checking venues endpoint: http://localhost:8000/venues
+PASSED: venues endpoint
+Checking devices endpoint: http://localhost:8000/devices
+PASSED: devices endpoint
+Posting device log ingestion: http://localhost:8001/ingest/logs
+PASSED: device log ingestion
+{"status":"accepted","event_id":"11542fad-32bf-4102-b015-6dd95dd98fbf","message":"Device log accepted into local mock Event Hub stream"}
+Posting SMS job queue: http://localhost:8000/notifications/sms
+PASSED: SMS job queue
+{"status":"queued","job":{"job_id":"d3d976ff-6eb4-46c9-90c7-6200a768b2f2","job_type":"send_sms","created_at_ms":1778592416358,"status":"queued","payload":{"guest_id":"guest-smoke-001","phone_number":"+440000000000","message":"Smoke test SMS"}}}
+Posting email job queue: http://localhost:8000/notifications/email
+PASSED: email job queue
+{"status":"queued","job":{"job_id":"981d39c7-6034-4837-84c3-70683757f842","job_type":"send_email","created_at_ms":1778592416367,"status":"queued","payload":{"guest_id":"guest-smoke-001","email":"guest@example.com","subject":"Smoke test email","body":"Smoke test body"}}}
+Posting video job queue: http://localhost:8000/videos/process
+PASSED: video job queue
+{"status":"queued","job":{"job_id":"4915ba25-8efc-439a-88e3-74f96dd01af2","job_type":"process_video","created_at_ms":1778592416375,"status":"queued","payload":{"venue_id":"venue-london-001","source_blob":"landing/smoke-test-video.mp4","requested_by":"smoke-test"}}}
+Waiting for workers to process queued messages...
+
+SMOKE TEST PASSED
+
+Proven flows:
+  web dashboard reachable
+  backend API healthy
+  ingestion API healthy
+  device log accepted
+  log worker processed device log
+  SMS/email jobs queued
+  notification worker processed jobs
+  video job queued
+  video worker processed job

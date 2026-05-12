@@ -1,0 +1,81 @@
+flowchart TB
+  subgraph Users
+    Admin[Company employee / admin user]
+    Guest[Guest]
+  end
+
+  subgraph Venue["Physical venue"]
+    Device[In-venue devices<br/>cameras / kiosks / game devices]
+  end
+
+  subgraph Edge["Edge security"]
+    Cloudflare[Cloudflare<br/>DNS / WAF / DDoS / CDN / rate limiting]
+  end
+
+  subgraph Azure["Azure"]
+    AppGw[Application Gateway WAF]
+    Ingress[AKS Ingress]
+
+    subgraph AKS["Azure Kubernetes Service"]
+      Web[Web admin frontend]
+      API[Backend API]
+      Ingestion[Device ingestion API]
+      LogWorker[Log processor worker]
+      VideoWorker[Video processor worker]
+      NotifyWorker[Notification worker]
+    end
+
+    EventHub[Azure Event Hubs<br/>device logs]
+    ServiceBus[Azure Service Bus<br/>jobs and commands]
+    Blob[Azure Blob Storage<br/>logs and videos]
+    Postgres[Azure PostgreSQL<br/>business data and audit logs]
+    Redis[Azure Redis<br/>hot config/device state]
+    KeyVault[Azure Key Vault<br/>secrets and certs]
+
+    Monitor[Azure Monitor]
+    Logs[Log Analytics]
+    AppInsights[Application Insights]
+    Grafana[Grafana / Prometheus]
+  end
+
+  Admin --> Cloudflare
+  Guest --> Cloudflare
+  Device --> Cloudflare
+
+  Cloudflare --> AppGw
+  AppGw --> Ingress
+
+  Ingress --> Web
+  Ingress --> API
+  Ingress --> Ingestion
+
+  Web --> API
+  API --> Postgres
+  API --> Redis
+  API --> KeyVault
+
+  Ingestion --> EventHub
+  EventHub --> LogWorker
+  LogWorker --> Blob
+  LogWorker --> Postgres
+
+  API --> ServiceBus
+  ServiceBus --> NotifyWorker
+  ServiceBus --> VideoWorker
+
+  NotifyWorker --> Postgres
+  VideoWorker --> Blob
+  VideoWorker --> Postgres
+
+  API --> Blob
+  Blob --> Cloudflare
+  Cloudflare --> Guest
+
+  AKS --> Monitor
+  AKS --> Logs
+  API --> AppInsights
+  Ingestion --> AppInsights
+  LogWorker --> Logs
+  VideoWorker --> Logs
+  NotifyWorker --> Logs
+  Monitor --> Grafana

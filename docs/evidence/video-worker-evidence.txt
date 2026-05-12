@@ -1,0 +1,13 @@
+# Video Worker Evidence
+Generated at: 2026-05-12T13:26:56Z
+
+venueops-video-processor  | {"asctime": "2026-05-12 12:53:53,363", "levelname": "INFO", "name": "venueops.video_processor", "message": "video_processor_started", "queue_path": "/data/queues/jobs.jsonl"}
+venueops-video-processor  | {"asctime": "2026-05-12 12:57:51,721", "levelname": "INFO", "name": "venueops.video_processor", "message": "video_job_processed", "job_id": "d6961211-0d33-4b64-9908-69b9d56cfc80"}
+venueops-video-processor  | {"asctime": "2026-05-12 13:00:00,377", "levelname": "INFO", "name": "venueops.video_processor", "message": "video_job_processed", "job_id": "acff2760-f3b6-435d-ac82-8ab62adb7645"}
+venueops-video-processor  | {"asctime": "2026-05-12 13:04:09,854", "levelname": "INFO", "name": "venueops.video_processor", "message": "video_job_processed", "job_id": "0eecd8c7-18c1-4cd9-a420-d1f3dd92a128"}
+venueops-video-processor  | {"asctime": "2026-05-12 13:13:29,692", "levelname": "INFO", "name": "venueops.video_processor", "message": "video_job_processed", "job_id": "36174b9a-d873-4c86-a0db-c789eb050a5f"}
+venueops-video-processor  | {"asctime": "2026-05-12 13:14:27,098", "levelname": "INFO", "name": "venueops.video_processor", "message": "video_job_processed", "job_id": "d70c5767-df5a-4c19-b2c9-866fe2a977d5"}
+venueops-video-processor  | {"asctime": "2026-05-12 13:19:14,009", "levelname": "INFO", "name": "venueops.video_processor", "message": "video_job_processed", "job_id": "10159573-a2f4-4ac3-ab21-7ececbac70ed"}
+venueops-video-processor  | {"asctime": "2026-05-12 13:19:23,012", "levelname": "INFO", "name": "venueops.video_processor", "message": "video_job_processed", "job_id": "986cbe59-d67d-46de-8736-ff5ab717146e"}
+venueops-video-processor  | {"asctime": "2026-05-12 13:22:29,584", "levelname": "INFO", "name": "venueops.video_processor", "message": "video_job_processed", "job_id": "07ca2505-282a-48c0-812e-2953a486f6d1"}
+venueops-video-processor  | {"asctime": "2026-05-12 13:26:56,610", "levelname": "INFO", "name": "venueops.video_processor", "message": "video_job_processed", "job_id": "4915ba25-8efc-439a-88e3-74f96dd01af2"}

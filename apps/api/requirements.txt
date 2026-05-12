@@ -1,0 +1,9 @@
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+python-json-logger==3.2.1
+azure-identity==1.19.0
+azure-servicebus==7.13.0
+SQLAlchemy==2.0.36
+psycopg[binary]==3.2.3
+prometheus-client==0.21.1

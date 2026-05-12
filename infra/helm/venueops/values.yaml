@@ -1,0 +1,176 @@
+global:
+  environment: dev
+  imageRegistry: ghcr.io/your-org
+  imageTag: latest
+  imagePullPolicy: IfNotPresent
+  tenantId: ""
+
+  workloadIdentity:
+    enabled: true
+    clientId: ""
+
+  keyVault:
+    enabled: false
+
+  config:
+    logLevel: INFO
+    appEnv: dev
+    serviceBusNamespace: venueops-dev-sbus
+    eventHubNamespace: venueops-dev-eh
+    eventHubName: device-logs
+    serviceBusQueueName: platform-jobs
+    keyVaultName: venueops-dev-kv
+    applicationInsightsConnectionStringSecretName: appinsights-connection-string
+
+ingress:
+  enabled: true
+  className: azure-application-gateway
+  host: venueops.example.com
+  tlsSecretName: venueops-tls
+  annotations:
+    appgw.ingress.kubernetes.io/backend-path-prefix: "/"
+    appgw.ingress.kubernetes.io/health-probe-path: "/health"
+
+services:
+  web:
+    enabled: true
+    kind: web
+    replicaCount: 2
+    image:
+      repository: venueops-web
+    containerPort: 80
+    servicePort: 80
+    path: /
+    healthPath: /health.html
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 250m
+        memory: 256Mi
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 5
+      cpuUtilization: 70
+
+  api:
+    enabled: true
+    kind: api
+    replicaCount: 2
+    image:
+      repository: venueops-api
+    containerPort: 8000
+    servicePort: 8000
+    path: /api
+    healthPath: /health
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 8
+      cpuUtilization: 70
+
+  ingestionApi:
+    enabled: true
+    kind: api
+    replicaCount: 2
+    image:
+      repository: venueops-ingestion-api
+    containerPort: 8001
+    servicePort: 8001
+    path: /ingestion
+    healthPath: /health
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 10
+      cpuUtilization: 70
+
+  logProcessor:
+    enabled: true
+    kind: worker
+    replicaCount: 1
+    image:
+      repository: venueops-log-processor
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 750m
+        memory: 768Mi
+    keda:
+      enabled: true
+      triggerType: azure-eventhub
+      consumerGroup: "$Default"
+      checkpointStrategy: azureBlob
+      minReplicas: 1
+      maxReplicas: 10
+      activationUnprocessedEventThreshold: "10"
+      unprocessedEventThreshold: "100"
+
+  videoProcessor:
+    enabled: true
+    kind: worker
+    replicaCount: 1
+    image:
+      repository: venueops-video-processor
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+    keda:
+      enabled: true
+      triggerType: azure-servicebus
+      queueName: video-jobs
+      minReplicas: 1
+      maxReplicas: 8
+      activationMessageCount: "5"
+      messageCount: "25"
+
+  notificationWorker:
+    enabled: true
+    kind: worker
+    replicaCount: 1
+    image:
+      repository: venueops-notification-worker
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    keda:
+      enabled: true
+      triggerType: azure-servicebus
+      queueName: notification-jobs
+      minReplicas: 1
+      maxReplicas: 10
+      activationMessageCount: "5"
+      messageCount: "50"
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+networkPolicy:
+  enabled: true

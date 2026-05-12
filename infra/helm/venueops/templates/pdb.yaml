@@ -1,0 +1,21 @@
+{{- if .Values.podDisruptionBudget.enabled }}
+{{- range $name, $svc := .Values.services }}
+{{- if $svc.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: venueops-{{ $name | kebabcase }}
+  labels:
+    app.kubernetes.io/name: venueops
+    app.kubernetes.io/component: {{ $name | kebabcase }}
+    app.kubernetes.io/part-of: venueops-platform
+spec:
+  minAvailable: {{ $.Values.podDisruptionBudget.minAvailable }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: venueops
+      app.kubernetes.io/component: {{ $name | kebabcase }}
+---
+{{- end }}
+{{- end }}
+{{- end }}

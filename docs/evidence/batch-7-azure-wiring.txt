@@ -1,0 +1,59 @@
+# Batch 7 Azure Wiring Evidence
+
+Tue May 12 14:06:11 UTC 2026
+
+## Docker Compose Status
+NAME                           IMAGE                                COMMAND                  SERVICE               CREATED         STATUS                   PORTS
+venueops-api                   interview-test-api                   "uvicorn src.main:ap…"   api                   2 minutes ago   Up 2 minutes (healthy)   0.0.0.0:8000->8000/tcp, :::8000->8000/tcp
+venueops-ingestion-api         interview-test-ingestion-api         "uvicorn src.main:ap…"   ingestion-api         2 minutes ago   Up 2 minutes (healthy)   0.0.0.0:8001->8001/tcp, :::8001->8001/tcp
+venueops-log-processor         interview-test-log-processor         "python -m src.worker"   log-processor         2 minutes ago   Up 2 minutes             
+venueops-notification-worker   interview-test-notification-worker   "python -m src.worker"   notification-worker   2 minutes ago   Up 2 minutes             
+venueops-video-processor       interview-test-video-processor       "python -m src.worker"   video-processor       2 minutes ago   Up 2 minutes             
+venueops-web                   interview-test-web                   "/docker-entrypoint.…"   web                   2 minutes ago   Up 2 minutes (healthy)   0.0.0.0:3000->80/tcp, [::]:3000->80/tcp
+
+## Backend Health
+{"status":"ok","service":"backend-api","environment":"local","message_mode":"local","timestamp_ms":1778594771863}
+
+## Ingestion Health
+{"status":"ok","service":"device-ingestion-api","environment":"local","message_mode":"local","timestamp_ms":1778594771870}
+
+## Smoke Test
+bash scripts/smoke-test.sh
+Running VenueOps smoke tests...
+
+Checking web dashboard: http://localhost:3000/health.html
+PASSED: web dashboard
+Checking backend API health: http://localhost:8000/health
+PASSED: backend API health
+Checking ingestion API health: http://localhost:8001/health
+PASSED: ingestion API health
+Checking venues endpoint: http://localhost:8000/venues
+PASSED: venues endpoint
+Checking devices endpoint: http://localhost:8000/devices
+PASSED: devices endpoint
+Posting device log ingestion: http://localhost:8001/ingest/logs
+PASSED: device log ingestion
+{"status":"accepted","event_id":"e9b45b50-27b1-416f-97ce-71c3ce962aa6","message":"Device log accepted into ingestion stream"}
+Posting SMS job queue: http://localhost:8000/notifications/sms
+PASSED: SMS job queue
+{"status":"queued","job":{"job_id":"7f86a63c-c232-447e-affe-9867bffc1048","job_type":"send_sms","created_at_ms":1778594771931,"status":"queued","payload":{"guest_id":"guest-smoke-001","phone_number":"+440000000000","message":"Smoke test SMS"}}}
+Posting email job queue: http://localhost:8000/notifications/email
+PASSED: email job queue
+{"status":"queued","job":{"job_id":"11c54f0e-67ae-41eb-aedd-91692a3c8e55","job_type":"send_email","created_at_ms":1778594771941,"status":"queued","payload":{"guest_id":"guest-smoke-001","email":"guest@example.com","subject":"Smoke test email","body":"Smoke test body"}}}
+Posting video job queue: http://localhost:8000/videos/process
+PASSED: video job queue
+{"status":"queued","job":{"job_id":"1010bda4-6b40-462b-a809-a9662bdc2e21","job_type":"process_video","created_at_ms":1778594771954,"status":"queued","payload":{"venue_id":"venue-london-001","source_blob":"landing/smoke-test-video.mp4","requested_by":"smoke-test"}}}
+Waiting for workers to process queued messages...
+
+SMOKE TEST PASSED
+
+Proven flows:
+  web dashboard reachable
+  backend API healthy
+  ingestion API healthy
+  device log accepted
+  log worker processed device log
+  SMS/email jobs queued
+  notification worker processed jobs
+  video job queued
+  video worker processed job

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: venueops-config
+  labels:
+    {{- include "venueops.labels" . | nindent 4 }}
+data:
+  APP_ENV: {{ .Values.global.config.appEnv | quote }}
+  LOG_LEVEL: {{ .Values.global.config.logLevel | quote }}
+  SERVICEBUS_NAMESPACE: {{ .Values.global.config.serviceBusNamespace | quote }}
+  EVENTHUB_NAMESPACE: {{ .Values.global.config.eventHubNamespace | quote }}
+  EVENTHUB_NAME: {{ .Values.global.config.eventHubName | quote }}
+  SERVICEBUS_QUEUE_NAME: {{ .Values.global.config.serviceBusQueueName | quote }}
+  KEYVAULT_NAME: {{ .Values.global.config.keyVaultName | quote }}

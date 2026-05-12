@@ -1,0 +1,4 @@
+python-json-logger==3.2.1
+azure-identity==1.19.0
+azure-eventhub==5.13.0
+prometheus-client==0.21.1

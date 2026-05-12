@@ -1,0 +1,13 @@
+# Docker Compose Status
+
+Generated at: 2026-05-12T14:35:12Z
+
+NAME                           IMAGE                                COMMAND                  SERVICE               CREATED          STATUS                    PORTS
+venueops-api                   interview-test-api                   "uvicorn src.main:ap…"   api                   14 minutes ago   Up 14 minutes (healthy)   0.0.0.0:8000->8000/tcp, :::8000->8000/tcp
+venueops-grafana               grafana/grafana:11.4.0               "/run.sh"                grafana               14 minutes ago   Up 14 minutes             0.0.0.0:3001->3000/tcp, [::]:3001->3000/tcp
+venueops-ingestion-api         interview-test-ingestion-api         "uvicorn src.main:ap…"   ingestion-api         14 minutes ago   Up 14 minutes (healthy)   0.0.0.0:8001->8001/tcp, :::8001->8001/tcp
+venueops-log-processor         interview-test-log-processor         "python -m src.worker"   log-processor         14 minutes ago   Up 14 minutes             0.0.0.0:9101->9101/tcp, :::9101->9101/tcp
+venueops-notification-worker   interview-test-notification-worker   "python -m src.worker"   notification-worker   14 minutes ago   Up 14 minutes             0.0.0.0:9103->9103/tcp, :::9103->9103/tcp
+venueops-prometheus            prom/prometheus:v3.0.1               "/bin/prometheus --c…"   prometheus            14 minutes ago   Up 14 minutes             0.0.0.0:9090->9090/tcp, :::9090->9090/tcp
+venueops-video-processor       interview-test-video-processor       "python -m src.worker"   video-processor       14 minutes ago   Up 14 minutes             0.0.0.0:9102->9102/tcp, :::9102->9102/tcp
+venueops-web                   interview-test-web                   "/docker-entrypoint.…"   web                   14 minutes ago   Up 14 minutes (healthy)   0.0.0.0:3000->80/tcp, [::]:3000->80/tcp

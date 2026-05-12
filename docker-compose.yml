@@ -1,0 +1,145 @@
+services:
+  web:
+    build:
+      context: ./apps/web
+    container_name: venueops-web
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+      - ingestion-api
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./apps/api
+    container_name: venueops-api
+    ports:
+      - "8000:8000"
+    environment:
+      APP_ENV: local
+      LOG_LEVEL: INFO
+      MESSAGE_MODE: local
+      DATABASE_MODE: sqlite
+      DATABASE_URL: sqlite:////data/db/venueops.db
+      DATA_DIR: /data
+      MOCK_SERVICEBUS_QUEUE: /data/queues/jobs.jsonl
+      AUDIT_LOG_PATH: /data/audit/audit.jsonl
+    volumes:
+      - venueops_data:/data
+    restart: unless-stopped
+
+  ingestion-api:
+    build:
+      context: ./apps/ingestion-api
+    container_name: venueops-ingestion-api
+    ports:
+      - "8001:8001"
+    environment:
+      APP_ENV: local
+      LOG_LEVEL: INFO
+      MESSAGE_MODE: local
+      DATABASE_MODE: sqlite
+      DATABASE_URL: sqlite:////data/db/venueops.db
+      DATA_DIR: /data
+      MOCK_EVENTHUB_QUEUE: /data/queues/device_logs.jsonl
+    volumes:
+      - venueops_data:/data
+    restart: unless-stopped
+
+  log-processor:
+    build:
+      context: ./apps/workers/log-processor
+    ports:
+      - "9101:9101"
+    container_name: venueops-log-processor
+    environment:
+      APP_ENV: local
+      LOG_LEVEL: INFO
+      MESSAGE_MODE: local
+      MOCK_EVENTHUB_QUEUE: /data/queues/device_logs.jsonl
+      PROCESSED_LOG_PATH: /data/processed/processed_device_logs.jsonl
+      METRICS_PORT: 9101
+    volumes:
+      - venueops_data:/data
+    depends_on:
+      - ingestion-api
+    restart: unless-stopped
+
+  video-processor:
+    build:
+      context: ./apps/workers/video-processor
+    ports:
+      - "9102:9102"
+    container_name: venueops-video-processor
+    environment:
+      APP_ENV: local
+      LOG_LEVEL: INFO
+      MESSAGE_MODE: local
+      MOCK_SERVICEBUS_QUEUE: /data/queues/jobs.jsonl
+      VIDEO_OUTPUT_PATH: /data/processed/video_jobs.jsonl
+      METRICS_PORT: 9102
+    volumes:
+      - venueops_data:/data
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  notification-worker:
+    build:
+      context: ./apps/workers/notification-worker
+    ports:
+      - "9103:9103"
+    container_name: venueops-notification-worker
+    environment:
+      APP_ENV: local
+      LOG_LEVEL: INFO
+      MESSAGE_MODE: local
+      MOCK_SERVICEBUS_QUEUE: /data/queues/jobs.jsonl
+      NOTIFICATION_OUTPUT_PATH: /data/processed/notification_jobs.jsonl
+      METRICS_PORT: 9103
+    volumes:
+      - venueops_data:/data
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v3.0.1
+    container_name: venueops-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./observability/prometheus/rules:/etc/prometheus/rules:ro
+      - prometheus_data:/prometheus
+    depends_on:
+      - api
+      - ingestion-api
+      - log-processor
+      - video-processor
+      - notification-worker
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:11.4.0
+    container_name: venueops-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+
+volumes:
+  venueops_data:
+  prometheus_data:
+  grafana_data:

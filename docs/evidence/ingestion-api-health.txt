@@ -1,0 +1,4 @@
+# Ingestion API Health
+Generated at: 2026-05-12T13:26:56Z
+
+{"status":"ok","service":"device-ingestion-api","environment":"local","timestamp_ms":1778592416303}

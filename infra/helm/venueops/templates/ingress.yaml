@@ -1,0 +1,41 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: venueops-ingress
+  labels:
+    {{- include "venueops.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.ingress.annotations | nindent 4 }}
+spec:
+  ingressClassName: {{ .Values.ingress.className | quote }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.host | quote }}
+      secretName: {{ .Values.ingress.tlsSecretName | quote }}
+  rules:
+    - host: {{ .Values.ingress.host | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: venueops-web
+                port:
+                  number: {{ .Values.services.web.servicePort }}
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: venueops-api
+                port:
+                  number: {{ .Values.services.api.servicePort }}
+          - path: /ingestion
+            pathType: Prefix
+            backend:
+              service:
+                name: venueops-ingestion-api
+                port:
+                  number: {{ .Values.services.ingestionApi.servicePort }}
+{{- end }}

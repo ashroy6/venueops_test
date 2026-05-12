@@ -1,0 +1,10 @@
+# Docker Compose Service Status
+Generated at: 2026-05-12T13:26:56Z
+
+NAME                           IMAGE                                COMMAND                  SERVICE               CREATED          STATUS                    PORTS
+venueops-api                   interview-test-api                   "uvicorn src.main:ap…"   api                   33 minutes ago   Up 33 minutes (healthy)   0.0.0.0:8000->8000/tcp, :::8000->8000/tcp
+venueops-ingestion-api         interview-test-ingestion-api         "uvicorn src.main:ap…"   ingestion-api         33 minutes ago   Up 33 minutes (healthy)   0.0.0.0:8001->8001/tcp, :::8001->8001/tcp
+venueops-log-processor         interview-test-log-processor         "python -m src.worker"   log-processor         33 minutes ago   Up 33 minutes             
+venueops-notification-worker   interview-test-notification-worker   "python -m src.worker"   notification-worker   33 minutes ago   Up 33 minutes             
+venueops-video-processor       interview-test-video-processor       "python -m src.worker"   video-processor       33 minutes ago   Up 33 minutes             
+venueops-web                   interview-test-web                   "/docker-entrypoint.…"   web                   33 minutes ago   Up 33 minutes (healthy)   0.0.0.0:3000->80/tcp, [::]:3000->80/tcp

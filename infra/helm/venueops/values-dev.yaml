@@ -1,0 +1,34 @@
+global:
+  environment: dev
+  imageRegistry: ghcr.io/your-org
+  imageTag: dev
+  config:
+    logLevel: INFO
+    appEnv: dev
+    serviceBusNamespace: venueops-dev-sbus
+    eventHubNamespace: venueops-dev-eh
+    eventHubName: device-logs
+    serviceBusQueueName: platform-jobs
+    keyVaultName: venueops-dev-kv
+
+ingress:
+  host: dev.venueops.example.com
+
+services:
+  web:
+    replicaCount: 1
+    autoscaling:
+      minReplicas: 1
+      maxReplicas: 3
+
+  api:
+    replicaCount: 1
+    autoscaling:
+      minReplicas: 1
+      maxReplicas: 4
+
+  ingestionApi:
+    replicaCount: 1
+    autoscaling:
+      minReplicas: 1
+      maxReplicas: 4

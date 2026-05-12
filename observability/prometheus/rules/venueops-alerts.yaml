@@ -1,0 +1,29 @@
+groups:
+  - name: venueops-api
+    rules:
+      - alert: VenueOpsApiHighErrorRate
+        expr: sum(rate(venueops_api_http_requests_total{status=~"5.."}[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: VenueOps API has elevated 5xx errors
+          description: Backend API is returning server errors.
+
+      - alert: VenueOpsIngestionHighErrorRate
+        expr: sum(rate(venueops_ingestion_http_requests_total{status=~"5.."}[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: VenueOps ingestion API has elevated 5xx errors
+          description: Device ingestion API is returning server errors.
+
+      - alert: VenueOpsWorkerNoProcessing
+        expr: sum(rate(venueops_worker_messages_processed_total[10m])) == 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: VenueOps workers are not processing messages
+          description: No worker processing activity has been observed.

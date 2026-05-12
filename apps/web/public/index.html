@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>VenueOps Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel2: #1f2937;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #38bdf8;
+      --border: #374151;
+      --good: #22c55e;
+      --warn: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      padding: 22px 28px;
+      background: #020617;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 24px;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    main {
+      padding: 24px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .card h2 {
+      font-size: 16px;
+      margin: 0 0 10px;
+    }
+
+    .metric {
+      font-size: 30px;
+      font-weight: bold;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    button {
+      background: var(--accent);
+      color: #082f49;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin: 4px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    pre {
+      background: #020617;
+      border: 1px solid var(--border);
+      padding: 14px;
+      border-radius: 12px;
+      overflow: auto;
+      min-height: 120px;
+      white-space: pre-wrap;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: var(--panel2);
+      color: var(--muted);
+      margin-top: 8px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>VenueOps Admin Dashboard</h1>
+    <p>Central configuration and operations view for venues, devices, logs, videos, and notifications.</p>
+  </header>
+
+  <main>
+    <section class="grid">
+      <div class="card">
+        <h2>Venues</h2>
+        <div class="metric" id="venues">-</div>
+        <div class="muted">Configured physical locations</div>
+      </div>
+
+      <div class="card">
+        <h2>Devices</h2>
+        <div class="metric" id="devices">-</div>
+        <div class="muted">In-venue devices</div>
+      </div>
+
+      <div class="card">
+        <h2>Backend API</h2>
+        <div class="metric" id="apiHealth">-</div>
+        <div class="muted">Business API health</div>
+      </div>
+
+      <div class="card">
+        <h2>Ingestion API</h2>
+        <div class="metric" id="ingestionHealth">-</div>
+        <div class="muted">Device log API health</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Demo actions</h2>
+      <button onclick="sendDeviceLog()">Send Device Log</button>
+      <button onclick="sendSmsJob()">Queue SMS Job</button>
+      <button onclick="sendEmailJob()">Queue Email Job</button>
+      <button onclick="sendVideoJob()">Queue Video Job</button>
+      <button onclick="loadAudit()">Load Audit Logs</button>
+      <div class="pill">Local mode uses mock files instead of Azure Event Hubs and Service Bus.</div>
+    </section>
+
+    <section class="card">
+      <h2>Output</h2>
+      <pre id="output">Loading status...</pre>
+    </section>
+  </main>
+
+  <script>
+    const API_BASE = "http://localhost:8000";
+    const INGESTION_BASE = "http://localhost:8001";
+
+    function show(obj) {
+      document.getElementById("output").textContent = JSON.stringify(obj, null, 2);
+    }
+
+    async function safeFetch(url, options) {
+      const res = await fetch(url, options);
+      const body = await res.json();
+      if (!res.ok) {
+        throw new Error(JSON.stringify(body));
+      }
+      return body;
+    }
+
+    async function loadStatus() {
+      try {
+        const apiHealth = await safeFetch(`${API_BASE}/health`);
+        const ingestionHealth = await safeFetch(`${INGESTION_BASE}/health`);
+        const venues = await safeFetch(`${API_BASE}/venues`);
+        const devices = await safeFetch(`${API_BASE}/devices`);
+
+        document.getElementById("apiHealth").textContent = apiHealth.status;
+        document.getElementById("ingestionHealth").textContent = ingestionHealth.status;
+        document.getElementById("venues").textContent = venues.items.length;
+        document.getElementById("devices").textContent = devices.items.length;
+
+        show({
+          status: "dashboard_loaded",
+          api: apiHealth,
+          ingestion: ingestionHealth
+        });
+      } catch (err) {
+        show({ error: String(err) });
+      }
+    }
+
+    async function sendDeviceLog() {
+      const payload = {
+        venue_id: "venue-london-001",
+        device_id: "camera-01",
+        level: "INFO",
+        event_type: "video_uploaded",
+        message: "Sample video uploaded from in-venue camera",
+        metadata: { demo: true }
+      };
+
+      try {
+        const body = await safeFetch(`${INGESTION_BASE}/ingest/logs`, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(payload)
+        });
+        show(body);
+      } catch (err) {
+        show({ error: String(err) });
+      }
+    }
+
+    async function sendSmsJob() {
+      const payload = {
+        guest_id: "guest-001",
+        phone_number: "+440000000000",
+        message: "Your in-game moment is ready."
+      };
+
+      try {
+        const body = await safeFetch(`${API_BASE}/notifications/sms`, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(payload)
+        });
+        show(body);
+      } catch (err) {
+        show({ error: String(err) });
+      }
+    }
+
+    async function sendEmailJob() {
+      const payload = {
+        guest_id: "guest-001",
+        email: "guest@example.com",
+        subject: "Your video is ready",
+        body: "Your in-game moment is ready to view."
+      };
+
+      try {
+        const body = await safeFetch(`${API_BASE}/notifications/email`, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(payload)
+        });
+        show(body);
+      } catch (err) {
+        show({ error: String(err) });
+      }
+    }
+
+    async function sendVideoJob() {
+      const payload = {
+        venue_id: "venue-london-001",
+        source_blob: "landing/sample-video.mp4",
+        requested_by: "admin-demo"
+      };
+
+      try {
+        const body = await safeFetch(`${API_BASE}/videos/process`, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(payload)
+        });
+        show(body);
+      } catch (err) {
+        show({ error: String(err) });
+      }
+    }
+
+    async function loadAudit() {
+      try {
+        const body = await safeFetch(`${API_BASE}/audit`);
+        show(body);
+      } catch (err) {
+        show({ error: String(err) });
+      }
+    }
+
+    loadStatus();
+  </script>
+</body>
+</html>

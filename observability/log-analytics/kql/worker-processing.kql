@@ -1,0 +1,7 @@
+ContainerLogV2
+| where TimeGenerated > ago(1h)
+| where LogMessage has "device_log_processed"
+   or LogMessage has "notification_job_processed"
+   or LogMessage has "video_job_processed"
+| project TimeGenerated, ContainerName, PodName, LogMessage
+| order by TimeGenerated desc

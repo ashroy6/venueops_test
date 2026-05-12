@@ -1,0 +1,64 @@
+# Batch 9.1 Local Grafana and Prometheus Evidence
+
+Tue May 12 14:23:54 UTC 2026
+
+## Docker Compose Status
+NAME                           IMAGE                                COMMAND                  SERVICE               CREATED         STATUS                   PORTS
+venueops-api                   interview-test-api                   "uvicorn src.main:ap…"   api                   2 minutes ago   Up 2 minutes (healthy)   0.0.0.0:8000->8000/tcp, :::8000->8000/tcp
+venueops-grafana               grafana/grafana:11.4.0               "/run.sh"                grafana               2 minutes ago   Up 2 minutes             0.0.0.0:3001->3000/tcp, [::]:3001->3000/tcp
+venueops-ingestion-api         interview-test-ingestion-api         "uvicorn src.main:ap…"   ingestion-api         2 minutes ago   Up 2 minutes (healthy)   0.0.0.0:8001->8001/tcp, :::8001->8001/tcp
+venueops-log-processor         interview-test-log-processor         "python -m src.worker"   log-processor         2 minutes ago   Up 2 minutes             0.0.0.0:9101->9101/tcp, :::9101->9101/tcp
+venueops-notification-worker   interview-test-notification-worker   "python -m src.worker"   notification-worker   2 minutes ago   Up 2 minutes             0.0.0.0:9103->9103/tcp, :::9103->9103/tcp
+venueops-prometheus            prom/prometheus:v3.0.1               "/bin/prometheus --c…"   prometheus            2 minutes ago   Up 2 minutes             0.0.0.0:9090->9090/tcp, :::9090->9090/tcp
+venueops-video-processor       interview-test-video-processor       "python -m src.worker"   video-processor       2 minutes ago   Up 2 minutes             0.0.0.0:9102->9102/tcp, :::9102->9102/tcp
+venueops-web                   interview-test-web                   "/docker-entrypoint.…"   web                   2 minutes ago   Up 2 minutes (healthy)   0.0.0.0:3000->80/tcp, [::]:3000->80/tcp
+
+## Smoke Test
+bash scripts/smoke-test.sh
+Running VenueOps smoke tests...
+
+Checking web dashboard: http://localhost:3000/health.html
+PASSED: web dashboard
+Checking backend API health: http://localhost:8000/health
+PASSED: backend API health
+Checking ingestion API health: http://localhost:8001/health
+PASSED: ingestion API health
+Checking venues endpoint: http://localhost:8000/venues
+PASSED: venues endpoint
+Checking devices endpoint: http://localhost:8000/devices
+PASSED: devices endpoint
+Posting device log ingestion: http://localhost:8001/ingest/logs
+PASSED: device log ingestion
+{"status":"accepted","event_id":"56b071df-8ff3-441d-b3e7-3342e7b64531","message":"Device log accepted into ingestion stream"}
+Posting SMS job queue: http://localhost:8000/notifications/sms
+PASSED: SMS job queue
+{"status":"queued","job":{"job_id":"5b2f5e58-4f3b-400f-b916-b04d0f1ea40e","job_type":"send_sms","created_at_ms":1778595835267,"status":"queued","payload":{"guest_id":"guest-smoke-001","phone_number":"+440000000000","message":"Smoke test SMS"}}}
+Posting email job queue: http://localhost:8000/notifications/email
+PASSED: email job queue
+{"status":"queued","job":{"job_id":"5f675d8f-f24a-41dc-91aa-d8f7658a40a2","job_type":"send_email","created_at_ms":1778595835283,"status":"queued","payload":{"guest_id":"guest-smoke-001","email":"guest@example.com","subject":"Smoke test email","body":"Smoke test body"}}}
+Posting video job queue: http://localhost:8000/videos/process
+PASSED: video job queue
+{"status":"queued","job":{"job_id":"65085499-c10c-4006-bd80-1c7755aa8d86","job_type":"process_video","created_at_ms":1778595835303,"status":"queued","payload":{"venue_id":"venue-london-001","source_blob":"landing/smoke-test-video.mp4","requested_by":"smoke-test"}}}
+Waiting for workers to process queued messages...
+
+SMOKE TEST PASSED
+
+Proven flows:
+  web dashboard reachable
+  backend API healthy
+  ingestion API healthy
+  device log accepted
+  log worker processed device log
+  SMS/email jobs queued
+  notification worker processed jobs
+  video job queued
+  video worker processed job
+
+## Prometheus UP Query
+{"status":"success","data":{"resultType":"vector","result":[{"metric":{"__name__":"up","instance":"api:8000","job":"venueops-api"},"value":[1778595843.732,"1"]},{"metric":{"__name__":"up","instance":"video-processor:9102","job":"venueops-video-processor"},"value":[1778595843.732,"1"]},{"metric":{"__name__":"up","instance":"log-processor:9101","job":"venueops-log-processor"},"value":[1778595843.732,"1"]},{"metric":{"__name__":"up","instance":"ingestion-api:8001","job":"venueops-ingestion-api"},"value":[1778595843.732,"1"]},{"metric":{"__name__":"up","instance":"notification-worker:9103","job":"venueops-notification-worker"},"value":[1778595843.732,"1"]}]}}
+
+## Grafana URL
+http://localhost:3001
+
+## Dashboard
+Dashboards -> VenueOps -> VenueOps Overview

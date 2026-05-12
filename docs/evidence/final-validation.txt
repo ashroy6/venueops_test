@@ -1,0 +1,73 @@
+# Final Validation Evidence
+
+Generated at: 2026-05-12T14:35:12Z
+
+Running final VenueOps validation...
+
+1. Docker Compose config
+PASSED: docker compose config
+
+2. Local smoke test
+bash scripts/smoke-test.sh
+Running VenueOps smoke tests...
+
+Checking web dashboard: http://localhost:3000/health.html
+PASSED: web dashboard
+Checking backend API health: http://localhost:8000/health
+PASSED: backend API health
+Checking ingestion API health: http://localhost:8001/health
+PASSED: ingestion API health
+Checking venues endpoint: http://localhost:8000/venues
+PASSED: venues endpoint
+Checking devices endpoint: http://localhost:8000/devices
+PASSED: devices endpoint
+Posting device log ingestion: http://localhost:8001/ingest/logs
+PASSED: device log ingestion
+{"status":"accepted","event_id":"a7f238e6-39b3-4f15-88b3-7becb4fcdfb5","message":"Device log accepted into ingestion stream"}
+Posting SMS job queue: http://localhost:8000/notifications/sms
+PASSED: SMS job queue
+{"status":"queued","job":{"job_id":"c685e059-76a3-4b58-8b81-0274109e3dcd","job_type":"send_sms","created_at_ms":1778596512738,"status":"queued","payload":{"guest_id":"guest-smoke-001","phone_number":"+440000000000","message":"Smoke test SMS"}}}
+Posting email job queue: http://localhost:8000/notifications/email
+PASSED: email job queue
+{"status":"queued","job":{"job_id":"41a078ca-3757-482c-a446-c82dcc6c7582","job_type":"send_email","created_at_ms":1778596512755,"status":"queued","payload":{"guest_id":"guest-smoke-001","email":"guest@example.com","subject":"Smoke test email","body":"Smoke test body"}}}
+Posting video job queue: http://localhost:8000/videos/process
+PASSED: video job queue
+{"status":"queued","job":{"job_id":"c1348191-d933-4c1c-8656-bcdb869f23b9","job_type":"process_video","created_at_ms":1778596512771,"status":"queued","payload":{"venue_id":"venue-london-001","source_blob":"landing/smoke-test-video.mp4","requested_by":"smoke-test"}}}
+Waiting for workers to process queued messages...
+
+SMOKE TEST PASSED
+
+Proven flows:
+  web dashboard reachable
+  backend API healthy
+  ingestion API healthy
+  device log accepted
+  log worker processed device log
+  SMS/email jobs queued
+  notification worker processed jobs
+  video job queued
+  video worker processed job
+
+3. Terraform validate
+[32m[1mSuccess![0m The configuration is valid.
+[0m
+
+4. Helm lint
+==> Linting infra/helm/venueops
+[INFO] Chart.yaml: icon is recommended
+
+1 chart(s) linted, 0 chart(s) failed
+
+5. Helm template dev
+PASSED: helm template dev
+
+6. Required workflow files
+PASSED: workflow files exist
+
+7. Required documentation files
+PASSED: documentation files exist
+
+8. Observability endpoints
+PASSED: metrics endpoints and Prometheus query
+
+FINAL VALIDATION PASSED

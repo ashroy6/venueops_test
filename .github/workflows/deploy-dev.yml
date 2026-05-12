@@ -1,0 +1,122 @@
+name: Deploy Dev
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Image tag to deploy"
+        required: false
+        default: "dev"
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  ACR_LOGIN_SERVER: ${{ vars.ACR_LOGIN_SERVER }}
+  AKS_RESOURCE_GROUP: ${{ vars.AKS_RESOURCE_GROUP }}
+  AKS_CLUSTER_NAME: ${{ vars.AKS_CLUSTER_NAME }}
+  HELM_RELEASE: venueops
+  HELM_NAMESPACE: venueops-dev
+
+jobs:
+  build-and-render:
+    name: Build images and render Helm
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate required variables
+        run: |
+          echo "This workflow can run in render-only mode without Azure."
+          echo "ACR_LOGIN_SERVER=${ACR_LOGIN_SERVER:-not-set}"
+          echo "AKS_RESOURCE_GROUP=${AKS_RESOURCE_GROUP:-not-set}"
+          echo "AKS_CLUSTER_NAME=${AKS_CLUSTER_NAME:-not-set}"
+
+      - name: Build local Docker images
+        run: |
+          docker compose build
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
+
+      - name: Render Helm chart
+        run: |
+          mkdir -p docs/evidence
+          helm template "$HELM_RELEASE" infra/helm/venueops \
+            --namespace "$HELM_NAMESPACE" \
+            --values infra/helm/venueops/values-dev.yaml \
+            --set global.imageRegistry="${ACR_LOGIN_SERVER:-local}" \
+            --set global.imageTag="${{ github.event.inputs.image_tag }}" \
+            > docs/evidence/deploy-dev-rendered.yaml
+
+      - name: Upload deploy render evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy-dev-rendered-manifests
+          path: docs/evidence/deploy-dev-rendered.yaml
+
+  deploy-to-aks:
+    name: Deploy to AKS dev
+    runs-on: ubuntu-latest
+    needs: build-and-render
+    timeout-minutes: 30
+
+    if: ${{ vars.ACR_LOGIN_SERVER != '' && vars.AKS_RESOURCE_GROUP != '' && vars.AKS_CLUSTER_NAME != '' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Docker login to ACR
+        run: |
+          az acr login --name "${ACR_LOGIN_SERVER%%.azurecr.io}"
+
+      - name: Build and push images
+        run: |
+          IMAGE_TAG="${{ github.event.inputs.image_tag }}"
+
+          docker build -t "$ACR_LOGIN_SERVER/venueops-web:$IMAGE_TAG" apps/web
+          docker build -t "$ACR_LOGIN_SERVER/venueops-api:$IMAGE_TAG" apps/api
+          docker build -t "$ACR_LOGIN_SERVER/venueops-ingestion-api:$IMAGE_TAG" apps/ingestion-api
+          docker build -t "$ACR_LOGIN_SERVER/venueops-log-processor:$IMAGE_TAG" apps/workers/log-processor
+          docker build -t "$ACR_LOGIN_SERVER/venueops-video-processor:$IMAGE_TAG" apps/workers/video-processor
+          docker build -t "$ACR_LOGIN_SERVER/venueops-notification-worker:$IMAGE_TAG" apps/workers/notification-worker
+
+          docker push "$ACR_LOGIN_SERVER/venueops-web:$IMAGE_TAG"
+          docker push "$ACR_LOGIN_SERVER/venueops-api:$IMAGE_TAG"
+          docker push "$ACR_LOGIN_SERVER/venueops-ingestion-api:$IMAGE_TAG"
+          docker push "$ACR_LOGIN_SERVER/venueops-log-processor:$IMAGE_TAG"
+          docker push "$ACR_LOGIN_SERVER/venueops-video-processor:$IMAGE_TAG"
+          docker push "$ACR_LOGIN_SERVER/venueops-notification-worker:$IMAGE_TAG"
+
+      - name: Get AKS credentials
+        run: |
+          az aks get-credentials \
+            --resource-group "$AKS_RESOURCE_GROUP" \
+            --name "$AKS_CLUSTER_NAME" \
+            --overwrite-existing
+
+      - name: Deploy with Helm
+        run: |
+          helm upgrade --install "$HELM_RELEASE" infra/helm/venueops \
+            --namespace "$HELM_NAMESPACE" \
+            --create-namespace \
+            --values infra/helm/venueops/values-dev.yaml \
+            --set global.imageRegistry="$ACR_LOGIN_SERVER" \
+            --set global.imageTag="${{ github.event.inputs.image_tag }}"
+
+      - name: Check rollout
+        run: |
+          kubectl -n "$HELM_NAMESPACE" rollout status deployment/venueops-api --timeout=180s
+          kubectl -n "$HELM_NAMESPACE" get pods

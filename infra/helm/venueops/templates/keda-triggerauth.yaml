@@ -1,0 +1,9 @@
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: venueops-keda-auth
+  labels:
+    {{- include "venueops.labels" . | nindent 4 }}
+spec:
+  podIdentity:
+    provider: azure-workload

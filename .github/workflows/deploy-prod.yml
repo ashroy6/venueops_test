@@ -1,0 +1,89 @@
+name: Deploy Prod
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Immutable image tag to deploy to production"
+        required: true
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  ACR_LOGIN_SERVER: ${{ vars.ACR_LOGIN_SERVER }}
+  AKS_RESOURCE_GROUP: ${{ vars.AKS_RESOURCE_GROUP_PROD }}
+  AKS_CLUSTER_NAME: ${{ vars.AKS_CLUSTER_NAME_PROD }}
+  HELM_RELEASE: venueops
+  HELM_NAMESPACE: venueops-prod
+
+jobs:
+  production-render:
+    name: Render production manifests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
+
+      - name: Render production Helm chart
+        run: |
+          mkdir -p docs/evidence
+          helm template "$HELM_RELEASE" infra/helm/venueops \
+            --namespace "$HELM_NAMESPACE" \
+            --values infra/helm/venueops/values-prod.yaml \
+            --set global.imageRegistry="${ACR_LOGIN_SERVER:-not-set}" \
+            --set global.imageTag="${{ github.event.inputs.image_tag }}" \
+            > docs/evidence/deploy-prod-rendered.yaml
+
+      - name: Upload production render evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy-prod-rendered-manifests
+          path: docs/evidence/deploy-prod-rendered.yaml
+
+  deploy-production:
+    name: Deploy to AKS production
+    runs-on: ubuntu-latest
+    needs: production-render
+    timeout-minutes: 30
+    environment: production
+
+    if: ${{ vars.ACR_LOGIN_SERVER != '' && vars.AKS_RESOURCE_GROUP_PROD != '' && vars.AKS_CLUSTER_NAME_PROD != '' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Get AKS credentials
+        run: |
+          az aks get-credentials \
+            --resource-group "$AKS_RESOURCE_GROUP" \
+            --name "$AKS_CLUSTER_NAME" \
+            --overwrite-existing
+
+      - name: Deploy production with Helm
+        run: |
+          helm upgrade --install "$HELM_RELEASE" infra/helm/venueops \
+            --namespace "$HELM_NAMESPACE" \
+            --create-namespace \
+            --values infra/helm/venueops/values-prod.yaml \
+            --set global.imageRegistry="$ACR_LOGIN_SERVER" \
+            --set global.imageTag="${{ github.event.inputs.image_tag }}"
+
+      - name: Check production rollout
+        run: |
+          kubectl -n "$HELM_NAMESPACE" rollout status deployment/venueops-api --timeout=300s
+          kubectl -n "$HELM_NAMESPACE" get pods

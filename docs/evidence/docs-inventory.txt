@@ -1,0 +1,32 @@
+]633;E;echo "# Documentation Inventory";c066976e-e4bc-4ea0-adf9-02b39d0043f9]633;C# Documentation Inventory
+
+Tue May 12 13:50:47 UTC 2026
+
+docs/architecture.md
+docs/automation.md
+docs/decisions/.gitkeep
+docs/diagrams/.gitkeep
+docs/diagrams/architecture.mmd
+docs/diagrams/local-demo.mmd
+docs/evidence/.gitkeep
+docs/evidence/README.md
+docs/evidence/backend-api-health.txt
+docs/evidence/docker-compose-status.txt
+docs/evidence/docs-inventory.txt
+docs/evidence/github-actions-workflows.txt
+docs/evidence/helm-lint.txt
+docs/evidence/ingestion-api-health.txt
+docs/evidence/local-smoke-test.txt
+docs/evidence/log-processor-evidence.txt
+docs/evidence/notification-worker-evidence.txt
+docs/evidence/terraform-validate.txt
+docs/evidence/video-worker-evidence.txt
+docs/interview-walkthrough.md
+docs/observability.md
+docs/reliability.md
+docs/resiliency.md
+docs/runbooks/.gitkeep
+docs/scalability.md
+docs/screenshots/.gitkeep
+docs/security.md
+docs/tradeoffs.md

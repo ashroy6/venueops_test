@@ -1,0 +1,200 @@
+# Final Project Tree
+
+Generated at: 2026-05-12T14:35:12Z
+
+.
+├── Makefile
+├── README.md
+├── apps
+│   ├── api
+│   │   ├── Dockerfile
+│   │   ├── requirements.txt
+│   │   ├── src
+│   │   │   ├── db.py
+│   │   │   ├── main.py
+│   │   │   ├── messaging.py
+│   │   │   └── telemetry.py
+│   │   └── tests
+│   ├── ingestion-api
+│   │   ├── Dockerfile
+│   │   ├── requirements.txt
+│   │   ├── src
+│   │   │   ├── eventhub_client.py
+│   │   │   ├── main.py
+│   │   │   └── telemetry.py
+│   │   └── tests
+│   ├── web
+│   │   ├── Dockerfile
+│   │   ├── nginx.conf
+│   │   ├── public
+│   │   │   ├── health.html
+│   │   │   └── index.html
+│   │   ├── src
+│   │   └── tests
+│   └── workers
+│       ├── log-processor
+│       │   ├── Dockerfile
+│       │   ├── requirements.txt
+│       │   ├── src
+│       │   └── tests
+│       ├── notification-worker
+│       │   ├── Dockerfile
+│       │   ├── requirements.txt
+│       │   ├── src
+│       │   └── tests
+│       └── video-processor
+│           ├── Dockerfile
+│           ├── requirements.txt
+│           ├── src
+│           └── tests
+├── config
+│   ├── dev
+│   ├── prod
+│   └── staging
+├── docker-compose.yml
+├── docs
+│   ├── aks-hardening.md
+│   ├── architecture.md
+│   ├── automation.md
+│   ├── cloudflare-app-gateway.md
+│   ├── database.md
+│   ├── decisions
+│   ├── diagrams
+│   │   ├── architecture.mmd
+│   │   └── local-demo.mmd
+│   ├── evidence
+│   │   ├── README.md
+│   │   ├── backend-api-health.txt
+│   │   ├── batch-10-cloudflare-appgateway.txt
+│   │   ├── batch-11-keda-aks-hardening.txt
+│   │   ├── batch-7-azure-wiring.txt
+│   │   ├── batch-8-database-wiring.txt
+│   │   ├── batch-9-1-local-grafana-prometheus.txt
+│   │   ├── docker-compose-status.txt
+│   │   ├── docs-inventory.txt
+│   │   ├── final-project-tree.txt
+│   │   ├── final-validation.txt
+│   │   ├── github-actions-workflows.txt
+│   │   ├── helm-lint.txt
+│   │   ├── ingestion-api-health.txt
+│   │   ├── local-smoke-test.txt
+│   │   ├── log-processor-evidence.txt
+│   │   ├── notification-worker-evidence.txt
+│   │   ├── terraform-validate.txt
+│   │   └── video-worker-evidence.txt
+│   ├── final-interview-script.md
+│   ├── interview-walkthrough.md
+│   ├── observability.md
+│   ├── reliability.md
+│   ├── resiliency.md
+│   ├── runbooks
+│   ├── scalability.md
+│   ├── screenshots
+│   ├── security.md
+│   ├── submission-checklist.md
+│   └── tradeoffs.md
+├── infra
+│   ├── helm
+│   │   ├── otel-collector
+│   │   └── venueops
+│   │       ├── Chart.yaml
+│   │       ├── templates
+│   │       ├── values-dev.yaml
+│   │       ├── values-prod.yaml
+│   │       └── values.yaml
+│   ├── kubernetes
+│   │   ├── base
+│   │   │   ├── api
+│   │   │   ├── hpa
+│   │   │   ├── ingestion-api
+│   │   │   ├── ingress
+│   │   │   ├── keda
+│   │   │   ├── namespace
+│   │   │   ├── network-policies
+│   │   │   ├── observability
+│   │   │   ├── pdb
+│   │   │   ├── secrets
+│   │   │   ├── web
+│   │   │   └── workers
+│   │   └── overlays
+│   │       ├── dev
+│   │       ├── prod
+│   │       └── staging
+│   ├── policies
+│   │   ├── kyverno
+│   │   └── opa
+│   ├── security
+│   │   ├── checkov
+│   │   ├── gitleaks
+│   │   ├── semgrep
+│   │   └── trivy
+│   └── terraform
+│       ├── envs
+│       │   ├── dev
+│       │   ├── prod
+│       │   └── staging
+│       ├── main.tf
+│       ├── modules
+│       │   ├── acr
+│       │   ├── aks
+│       │   ├── application-gateway
+│       │   ├── cloudflare
+│       │   ├── event-hubs
+│       │   ├── key-vault
+│       │   ├── monitoring
+│       │   ├── network
+│       │   ├── postgresql
+│       │   ├── redis
+│       │   ├── resource-group
+│       │   ├── service-bus
+│       │   └── storage
+│       ├── outputs.tf
+│       ├── providers.tf
+│       ├── variables.tf
+│       └── versions.tf
+├── local
+│   ├── mock-eventhub
+│   ├── mock-servicebus
+│   ├── postgres-init
+│   └── sample-data
+│       ├── devices
+│       ├── logs
+│       └── videos
+├── observability
+│   ├── grafana
+│   │   ├── dashboards
+│   │   │   └── venueops-overview.json
+│   │   └── provisioning
+│   │       ├── dashboards
+│   │       └── datasources
+│   ├── log-analytics
+│   │   └── kql
+│   │       ├── api-errors.kql
+│   │       ├── audit-events.kql
+│   │       └── worker-processing.kql
+│   ├── otel
+│   │   └── README.md
+│   └── prometheus
+│       ├── prometheus.yml
+│       └── rules
+│           └── venueops-alerts.yaml
+├── packages
+│   ├── contracts
+│   └── shared
+│       └── src
+├── scripts
+│   ├── final-evidence.sh
+│   ├── final-validate.sh
+│   ├── generate-evidence.sh
+│   ├── install-keda.sh
+│   ├── local-down.sh
+│   ├── local-up.sh
+│   └── smoke-test.sh
+├── tests
+│   ├── integration
+│   ├── load
+│   ├── security
+│   └── smoke
+└── tools
+
+111 directories, 82 files

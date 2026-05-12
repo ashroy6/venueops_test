@@ -1,0 +1,5 @@
+ContainerLogV2
+| where TimeGenerated > ago(1h)
+| where LogMessage has "ERROR" or LogMessage has "Exception"
+| project TimeGenerated, ContainerName, PodName, LogMessage
+| order by TimeGenerated desc

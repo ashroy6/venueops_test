@@ -1,0 +1,91 @@
+name: KEDA and AKS Hardening
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+    paths:
+      - "infra/helm/**"
+      - "infra/kubernetes/**"
+      - "scripts/install-keda.sh"
+      - ".github/workflows/keda-aks-hardening.yml"
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - "infra/helm/**"
+      - "infra/kubernetes/**"
+      - "scripts/install-keda.sh"
+      - ".github/workflows/keda-aks-hardening.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  validate-keda-manifests:
+    name: Validate Helm and KEDA manifests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
+
+      - name: Helm lint VenueOps
+        run: |
+          helm lint infra/helm/venueops
+
+      - name: Render VenueOps chart
+        run: |
+          mkdir -p docs/evidence
+          helm template venueops infra/helm/venueops \
+            --values infra/helm/venueops/values-dev.yaml \
+            > docs/evidence/keda-aks-hardening-rendered.yaml
+
+      - name: Verify KEDA objects render
+        run: |
+          grep -q "kind: ScaledObject" docs/evidence/keda-aks-hardening-rendered.yaml
+          grep -q "kind: TriggerAuthentication" docs/evidence/keda-aks-hardening-rendered.yaml
+
+      - name: Upload rendered manifests
+        uses: actions/upload-artifact@v4
+        with:
+          name: keda-aks-hardening-rendered
+          path: docs/evidence/keda-aks-hardening-rendered.yaml
+
+  install-keda:
+    name: Install KEDA into AKS
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: validate-keda-manifests
+
+    if: ${{ vars.AKS_RESOURCE_GROUP != '' && vars.AKS_CLUSTER_NAME != '' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Get AKS credentials
+        run: |
+          az aks get-credentials \
+            --resource-group "${{ vars.AKS_RESOURCE_GROUP }}" \
+            --name "${{ vars.AKS_CLUSTER_NAME }}" \
+            --overwrite-existing
+
+      - name: Install KEDA
+        run: |
+          bash scripts/install-keda.sh

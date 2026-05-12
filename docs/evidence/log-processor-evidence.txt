@@ -1,0 +1,13 @@
+# Log Processor Evidence
+Generated at: 2026-05-12T13:26:56Z
+
+venueops-log-processor  | {"asctime": "2026-05-12 12:53:52,851", "levelname": "INFO", "name": "venueops.log_processor", "message": "log_processor_started", "queue_path": "/data/queues/device_logs.jsonl"}
+venueops-log-processor  | {"asctime": "2026-05-12 12:54:30,759", "levelname": "INFO", "name": "venueops.log_processor", "message": "device_log_processed", "event_id": "d2c5d334-eb5c-4769-a7ea-c2791724e4db", "venue_id": "venue-london-001", "device_id": "camera-01"}
+venueops-log-processor  | {"asctime": "2026-05-12 12:57:45,208", "levelname": "INFO", "name": "venueops.log_processor", "message": "device_log_processed", "event_id": "ef684074-291b-474e-8e3a-ada26d6b5d65", "venue_id": "venue-london-001", "device_id": "camera-01"}
+venueops-log-processor  | {"asctime": "2026-05-12 13:04:12,381", "levelname": "INFO", "name": "venueops.log_processor", "message": "device_log_processed", "event_id": "f51003d1-6c58-44af-9ea2-ec2e4ad8f9d1", "venue_id": "venue-london-001", "device_id": "camera-01"}
+venueops-log-processor  | {"asctime": "2026-05-12 13:13:29,353", "levelname": "INFO", "name": "venueops.log_processor", "message": "device_log_processed", "event_id": "d4d14633-ffe1-4a60-8730-576bf1693068", "venue_id": "venue-london-001", "device_id": "camera-01"}
+venueops-log-processor  | {"asctime": "2026-05-12 13:14:26,758", "levelname": "INFO", "name": "venueops.log_processor", "message": "device_log_processed", "event_id": "8df4f1f9-eba0-401c-9361-b9cc844f853e", "venue_id": "venue-london-001", "device_id": "camera-01"}
+venueops-log-processor  | {"asctime": "2026-05-12 13:19:13,697", "levelname": "INFO", "name": "venueops.log_processor", "message": "device_log_processed", "event_id": "5a78935c-7948-4b7d-a817-cdce4fdb2afb", "venue_id": "venue-london-001", "device_id": "camera-01"}
+venueops-log-processor  | {"asctime": "2026-05-12 13:19:22,698", "levelname": "INFO", "name": "venueops.log_processor", "message": "device_log_processed", "event_id": "40cb967c-425e-4f54-8856-393bd9bdfa18", "venue_id": "venue-london-001", "device_id": "camera-01"}
+venueops-log-processor  | {"asctime": "2026-05-12 13:22:29,280", "levelname": "INFO", "name": "venueops.log_processor", "message": "device_log_processed", "event_id": "0e3f9085-0258-4560-b587-ccc704b319c2", "venue_id": "venue-london-001", "device_id": "camera-01"}
+venueops-log-processor  | {"asctime": "2026-05-12 13:26:59,307", "levelname": "INFO", "name": "venueops.log_processor", "message": "device_log_processed", "event_id": "11542fad-32bf-4102-b015-6dd95dd98fbf", "venue_id": "venue-london-001", "device_id": "camera-01"}

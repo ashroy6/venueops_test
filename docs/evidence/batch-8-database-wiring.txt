@@ -1,0 +1,59 @@
+# Batch 8 Database Wiring Evidence
+
+Tue May 12 14:09:58 UTC 2026
+
+## Backend Health
+{"status":"ok","service":"backend-api","environment":"local","message_mode":"local","database_mode":"sqlite","timestamp_ms":1778594998251}
+
+## Venues
+{"items":[{"venue_id":"venue-london-001","name":"London Arena","status":"active","created_at":"2026-05-12T14:08:53"},{"venue_id":"venue-manchester-001","name":"Manchester Game Hub","status":"active","created_at":"2026-05-12T14:08:53"}]}
+
+## Devices
+{"items":[{"device_id":"camera-01","venue_id":"venue-london-001","type":"camera","status":"online"},{"device_id":"kiosk-01","venue_id":"venue-london-001","type":"kiosk","status":"online"},{"device_id":"game-07","venue_id":"venue-manchester-001","type":"game-device","status":"warning"}]}
+
+## Jobs
+{"items":[{"job_id":"47f7f0db-dccc-4392-8b27-16954b88c027","job_type":"process_video","status":"queued","payload":{"venue_id":"venue-london-001","source_blob":"landing/smoke-test-video.mp4","requested_by":"smoke-test"},"created_at_ms":1778594962768,"updated_at":"2026-05-12T14:09:22"},{"job_id":"ba65b8e7-c73d-4c40-a57b-3e946672b791","job_type":"send_email","status":"queued","payload":{"guest_id":"guest-smoke-001","email":"guest@example.com","subject":"Smoke test email","body":"Smoke test body"},"created_at_ms":1778594962755,"updated_at":"2026-05-12T14:09:22"},{"job_id":"2c4a762d-3268-4bfe-86a5-e6878023cd08","job_type":"send_sms","status":"queued","payload":{"guest_id":"guest-smoke-001","phone_number":"+440000000000","message":"Smoke test SMS"},"created_at_ms":1778594962740,"updated_at":"2026-05-12T14:09:22"},{"job_id":"167f455c-10e6-457d-91a3-c4f0eb236674","job_type":"process_video","status":"queued","payload":{"venue_id":"venue-london-001","source_blob":"landing/smoke-test-video.mp4","requested_by":"smoke-test"},"created_at_ms":1778594942339,"updated_at":"2026-05-12T14:09:02"},{"job_id":"7a0c1662-6d5e-45b5-a01f-74aaec113c58","job_type":"send_email","status":"queued","payload":{"guest_id":"guest-smoke-001","email":"guest@example.com","subject":"Smoke test email","body":"Smoke test body"},"created_at_ms":1778594942323,"updated_at":"2026-05-12T14:09:02"},{"job_id":"15d8db76-65f6-4752-8937-004943556b7d","job_type":"send_sms","status":"queued","payload":{"guest_id":"guest-smoke-001","phone_number":"+440000000000","message":"Smoke test SMS"},"created_at_ms":1778594942304,"updated_at":"2026-05-12T14:09:02"}]}
+
+## Audit Logs
+{"items":[{"audit_id":"8bc2424e-c34d-4a7a-896c-2e85917e9984","timestamp_ms":1778594962771,"service":"backend-api","action":"video.processing.requested","actor":"smoke-test","payload":{"job_id":"47f7f0db-dccc-4392-8b27-16954b88c027","venue_id":"venue-london-001","source_blob":"landing/smoke-test-video.mp4","requested_by":"smoke-test"},"created_at":"2026-05-12T14:09:22"},{"audit_id":"3bdf496a-ad13-4762-bff7-6a21d1294421","timestamp_ms":1778594962758,"service":"backend-api","action":"notification.email.requested","actor":"guest-smoke-001","payload":{"job_id":"ba65b8e7-c73d-4c40-a57b-3e946672b791"},"created_at":"2026-05-12T14:09:22"},{"audit_id":"e8cecc59-b9ba-4932-886c-26a1726073b7","timestamp_ms":1778594962744,"service":"backend-api","action":"notification.sms.requested","actor":"guest-smoke-001","payload":{"job_id":"2c4a762d-3268-4bfe-86a5-e6878023cd08"},"created_at":"2026-05-12T14:09:22"},{"audit_id":"09754d59-a51b-4a96-bbe4-737b5099a5c7","timestamp_ms":1778594942342,"service":"backend-api","action":"video.processing.requested","actor":"smoke-test","payload":{"job_id":"167f455c-10e6-457d-91a3-c4f0eb236674","venue_id":"venue-london-001","source_blob":"landing/smoke-test-video.mp4","requested_by":"smoke-test"},"created_at":"2026-05-12T14:09:02"},{"audit_id":"ba6f57e3-f83e-4bc7-9304-e57a43c75f54","timestamp_ms":1778594942326,"service":"backend-api","action":"notification.email.requested","actor":"guest-smoke-001","payload":{"job_id":"7a0c1662-6d5e-45b5-a01f-74aaec113c58"},"created_at":"2026-05-12T14:09:02"},{"audit_id":"7e8eb46a-ae33-40f8-b3d3-b4b475f0d006","timestamp_ms":1778594942309,"service":"backend-api","action":"notification.sms.requested","actor":"guest-smoke-001","payload":{"job_id":"15d8db76-65f6-4752-8937-004943556b7d"},"created_at":"2026-05-12T14:09:02"}]}
+
+## Smoke Test
+bash scripts/smoke-test.sh
+Running VenueOps smoke tests...
+
+Checking web dashboard: http://localhost:3000/health.html
+PASSED: web dashboard
+Checking backend API health: http://localhost:8000/health
+PASSED: backend API health
+Checking ingestion API health: http://localhost:8001/health
+PASSED: ingestion API health
+Checking venues endpoint: http://localhost:8000/venues
+PASSED: venues endpoint
+Checking devices endpoint: http://localhost:8000/devices
+PASSED: devices endpoint
+Posting device log ingestion: http://localhost:8001/ingest/logs
+PASSED: device log ingestion
+{"status":"accepted","event_id":"74d12acd-e1f0-431a-816b-28f7057cc809","message":"Device log accepted into ingestion stream"}
+Posting SMS job queue: http://localhost:8000/notifications/sms
+PASSED: SMS job queue
+{"status":"queued","job":{"job_id":"46a582f7-625c-448c-ab35-967320b77d9d","job_type":"send_sms","created_at_ms":1778594998348,"status":"queued","payload":{"guest_id":"guest-smoke-001","phone_number":"+440000000000","message":"Smoke test SMS"}}}
+Posting email job queue: http://localhost:8000/notifications/email
+PASSED: email job queue
+{"status":"queued","job":{"job_id":"dca244cd-e8c0-4ebb-b197-97a30dfebc2f","job_type":"send_email","created_at_ms":1778594998364,"status":"queued","payload":{"guest_id":"guest-smoke-001","email":"guest@example.com","subject":"Smoke test email","body":"Smoke test body"}}}
+Posting video job queue: http://localhost:8000/videos/process
+PASSED: video job queue
+{"status":"queued","job":{"job_id":"aaeda53f-ed0c-4053-9629-47e4ac8e5e77","job_type":"process_video","created_at_ms":1778594998380,"status":"queued","payload":{"venue_id":"venue-london-001","source_blob":"landing/smoke-test-video.mp4","requested_by":"smoke-test"}}}
+Waiting for workers to process queued messages...
+
+SMOKE TEST PASSED
+
+Proven flows:
+  web dashboard reachable
+  backend API healthy
+  ingestion API healthy
+  device log accepted
+  log worker processed device log
+  SMS/email jobs queued
+  notification worker processed jobs
+  video job queued
+  video worker processed job

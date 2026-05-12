@@ -1,0 +1,20 @@
+# Batch 10 Cloudflare and Application Gateway Evidence
+
+Tue May 12 14:27:48 UTC 2026
+
+## Terraform Validate
+[32m[1mSuccess![0m The configuration is valid.
+[0m
+
+## Application Gateway Module Files
+infra/terraform/modules/application-gateway/main.tf
+infra/terraform/modules/application-gateway/outputs.tf
+infra/terraform/modules/application-gateway/variables.tf
+
+## Cloudflare Module
+infra/terraform/modules/cloudflare/main.tf
+infra/terraform/modules/cloudflare/outputs.tf
+infra/terraform/modules/cloudflare/variables.tf
+
+## Docs
+docs/cloudflare-app-gateway.md

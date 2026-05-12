@@ -1,0 +1,51 @@
+# Batch 11 KEDA and AKS Hardening Evidence
+
+Tue May 12 14:31:28 UTC 2026
+
+## Helm Lint
+==> Linting infra/helm/venueops
+[INFO] Chart.yaml: icon is recommended
+
+1 chart(s) linted, 0 chart(s) failed
+
+## Rendered KEDA Objects
+137:kind: ServiceAccount
+147:automountServiceAccountToken: true
+701:kind: ScaledObject
+729:kind: ScaledObject
+755:kind: ScaledObject
+781:kind: TriggerAuthentication
+
+## Terraform Validate
+[32m[1mSuccess![0m The configuration is valid.
+[0m
+
+## KEDA Install Script
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "Installing KEDA with Helm..."
+
+if ! command -v helm >/dev/null 2>&1; then
+  echo "ERROR: helm is not installed."
+  exit 1
+fi
+
+if ! command -v kubectl >/dev/null 2>&1; then
+  echo "ERROR: kubectl is not installed."
+  exit 1
+fi
+
+helm repo add kedacore https://kedacore.github.io/charts
+helm repo update
+
+helm upgrade --install keda kedacore/keda \
+  --namespace keda \
+  --create-namespace \
+  --wait \
+  --timeout 5m
+
+kubectl get pods -n keda
+
+## AKS Hardening Doc
+docs/aks-hardening.md

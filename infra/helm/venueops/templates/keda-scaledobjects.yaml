@@ -1,0 +1,42 @@
+{{- range $name, $svc := .Values.services }}
+{{- if and $svc.enabled (eq $svc.kind "worker") $svc.keda.enabled }}
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: venueops-{{ $name | kebabcase }}
+  labels:
+    app.kubernetes.io/name: venueops
+    app.kubernetes.io/component: {{ $name | kebabcase }}
+    app.kubernetes.io/part-of: venueops-platform
+spec:
+  scaleTargetRef:
+    name: venueops-{{ $name | kebabcase }}
+  minReplicaCount: {{ $svc.keda.minReplicas }}
+  maxReplicaCount: {{ $svc.keda.maxReplicas }}
+  pollingInterval: 30
+  cooldownPeriod: 300
+  triggers:
+    {{- if eq $svc.keda.triggerType "azure-servicebus" }}
+    - type: azure-servicebus
+      metadata:
+        namespace: {{ $.Values.global.config.serviceBusNamespace | quote }}
+        queueName: {{ $svc.keda.queueName | quote }}
+        messageCount: {{ $svc.keda.messageCount | quote }}
+        activationMessageCount: {{ $svc.keda.activationMessageCount | quote }}
+      authenticationRef:
+        name: venueops-keda-auth
+    {{- else if eq $svc.keda.triggerType "azure-eventhub" }}
+    - type: azure-eventhub
+      metadata:
+        eventHubNamespace: {{ $.Values.global.config.eventHubNamespace | quote }}
+        eventHubName: {{ $.Values.global.config.eventHubName | quote }}
+        consumerGroup: {{ $svc.keda.consumerGroup | quote }}
+        unprocessedEventThreshold: {{ $svc.keda.unprocessedEventThreshold | quote }}
+        activationUnprocessedEventThreshold: {{ $svc.keda.activationUnprocessedEventThreshold | quote }}
+        checkpointStrategy: {{ $svc.keda.checkpointStrategy | quote }}
+      authenticationRef:
+        name: venueops-keda-auth
+    {{- end }}
+---
+{{- end }}
+{{- end }}
