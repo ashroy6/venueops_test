@@ -454,7 +454,44 @@ Validation pipelines run automatically.
 Production deployment pipelines are manual and approval-gated.
 Rollback is manual.
 ```
+## Expected CI/CD Trigger Behavior
 
+Not every workflow runs on every push. This is intentional.
+
+The repository uses path-based triggers so GitHub Actions only runs the workflows relevant to the files that changed. This keeps CI faster, cheaper, and closer to real production practice.
+
+| Workflow | Runs Automatically When | Manual Run |
+|---|---|---|
+| CI | Push or PR to `main` / `dev` | Yes |
+| Security Scan | Push or PR to `main` / `dev` | Yes |
+| Evidence Pack | Docs, infra, workflow, script, or observability files change | Yes |
+| Terraform Validate | Terraform files change under `infra/terraform/**` | Yes |
+| Terraform Plan | Pull request with Terraform changes, or manual trigger | Yes |
+| Terraform Apply | Never automatically | Yes, with approval and Azure variables |
+| Helm Validate | Helm files change under `infra/helm/**` | Yes |
+| KEDA and AKS Hardening | Helm, Kubernetes, or KEDA-related files change | Yes |
+| Image Scan and SBOM | Application code, Dockerfiles, or Docker Compose changes | Yes |
+| Deploy Dev | Never automatically in this local/interview setup | Yes |
+| Deploy Prod | Never automatically | Yes, with production approval |
+| Rollback Prod | Never automatically | Yes |
+
+### Why only some pipelines run after a push
+
+Example:
+
+- If only `README.md` or screenshots change, Terraform and Helm validation do not need to run.
+- If Terraform files change, Terraform Validate and Terraform Plan run.
+- If Helm chart files change, Helm Validate and KEDA/AKS Hardening run.
+- If application code changes, CI and Image Scan/SBOM run.
+- Production deployment and rollback are manual by design.
+
+This follows the production rule:
+
+```text
+Validation = automatic when relevant
+Deployment = controlled/manual
+Production = approval-gated
+Rollback = manual emergency action
 ---
 
 ## Observability
