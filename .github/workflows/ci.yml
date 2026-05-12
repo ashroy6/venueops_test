@@ -110,9 +110,37 @@ jobs:
 
       - name: Check observability endpoints
         run: |
-          curl -fsS http://127.0.0.1:8000/metrics | grep venueops_api
-          curl -fsS http://127.0.0.1:8001/metrics | grep venueops_ingestion
-          curl -fsS "http://127.0.0.1:9090/api/v1/query?query=up" | grep venueops-api
+          wait_for_metric() {
+            local name="$1"
+            local command="$2"
+            local attempts="${3:-60}"
+
+            echo "Waiting for metric: $name"
+
+            for i in $(seq 1 "$attempts"); do
+              if bash -c "$command"; then
+                echo "PASSED: $name"
+                return 0
+              fi
+
+              echo "$name not ready yet... attempt $i/$attempts"
+              sleep 2
+            done
+
+            echo "FAILED: $name did not become available"
+            docker compose ps || true
+            docker compose logs --tail=200 prometheus || true
+            exit 1
+          }
+
+          wait_for_metric "backend API metrics" \
+            "curl -fsS http://127.0.0.1:8000/metrics | grep venueops_api" 60
+
+          wait_for_metric "ingestion API metrics" \
+            "curl -fsS http://127.0.0.1:8001/metrics | grep venueops_ingestion" 60
+
+          wait_for_metric "Prometheus target query" \
+            "curl -fsS 'http://127.0.0.1:9090/api/v1/query?query=up' | grep venueops-api" 60
 
       - name: Generate evidence
         if: always()
