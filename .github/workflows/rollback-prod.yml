@@ -1,0 +1,64 @@
+name: Rollback Prod
+
+on:
+  workflow_dispatch:
+    inputs:
+      revision:
+        description: "Helm revision number to roll back to"
+        required: true
+      namespace:
+        description: "Kubernetes namespace"
+        required: true
+        default: "venueops-prod"
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  AKS_RESOURCE_GROUP: ${{ vars.AKS_RESOURCE_GROUP_PROD }}
+  AKS_CLUSTER_NAME: ${{ vars.AKS_CLUSTER_NAME_PROD }}
+  HELM_RELEASE: venueops
+
+jobs:
+  rollback-prod:
+    name: Roll back production Helm release
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+
+    if: ${{ vars.AKS_RESOURCE_GROUP_PROD != '' && vars.AKS_CLUSTER_NAME_PROD != '' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Get AKS credentials
+        run: |
+          az aks get-credentials \
+            --resource-group "$AKS_RESOURCE_GROUP" \
+            --name "$AKS_CLUSTER_NAME" \
+            --overwrite-existing
+
+      - name: Show Helm history
+        run: |
+          helm history "$HELM_RELEASE" --namespace "${{ github.event.inputs.namespace }}"
+
+      - name: Roll back release
+        run: |
+          helm rollback "$HELM_RELEASE" "${{ github.event.inputs.revision }}" \
+            --namespace "${{ github.event.inputs.namespace }}" \
+            --wait \
+            --timeout 5m
+
+      - name: Check rollout after rollback
+        run: |
+          kubectl -n "${{ github.event.inputs.namespace }}" rollout status deployment/venueops-api --timeout=300s
+          kubectl -n "${{ github.event.inputs.namespace }}" get pods

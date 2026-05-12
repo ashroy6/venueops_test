@@ -223,3 +223,21 @@ Final evidence is stored in:
 - docs/database.md
 - docs/cloudflare-app-gateway.md
 - docs/aks-hardening.md
+
+
+## Production Readiness Additions
+
+This repo also includes production-readiness workflows and docs:
+
+- Image scan and SBOM workflow
+- Terraform plan workflow
+- Terraform apply workflow with environment approval
+- Production rollback workflow
+- Evidence pack workflow
+- Branch protection guidance
+- Production approval guidance
+
+Review:
+
+- docs/branch-protection.md
+- docs/production-approval.md

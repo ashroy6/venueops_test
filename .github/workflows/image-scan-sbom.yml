@@ -1,0 +1,77 @@
+name: Image Scan and SBOM
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - dev
+    paths:
+      - "apps/**"
+      - "docker-compose.yml"
+      - ".github/workflows/image-scan-sbom.yml"
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - "apps/**"
+      - "docker-compose.yml"
+      - ".github/workflows/image-scan-sbom.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  image-scan-sbom:
+    name: Build images, scan, and generate SBOM
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: venueops-web
+            context: apps/web
+          - name: venueops-api
+            context: apps/api
+          - name: venueops-ingestion-api
+            context: apps/ingestion-api
+          - name: venueops-log-processor
+            context: apps/workers/log-processor
+          - name: venueops-video-processor
+            context: apps/workers/video-processor
+          - name: venueops-notification-worker
+            context: apps/workers/notification-worker
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build image
+        run: |
+          docker build -t "${{ matrix.name }}:${{ github.sha }}" "${{ matrix.context }}"
+
+      - name: Run Trivy image scan
+        uses: aquasecurity/trivy-action@v0.35.0
+        with:
+          image-ref: "${{ matrix.name }}:${{ github.sha }}"
+          format: table
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: "0"
+
+      - name: Generate SBOM
+        uses: aquasecurity/trivy-action@v0.35.0
+        with:
+          image-ref: "${{ matrix.name }}:${{ github.sha }}"
+          format: cyclonedx
+          output: "sbom-${{ matrix.name }}.json"
+          exit-code: "0"
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: "sbom-${{ matrix.name }}"
+          path: "sbom-${{ matrix.name }}.json"

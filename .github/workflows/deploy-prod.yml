@@ -17,6 +17,7 @@ env:
   AKS_CLUSTER_NAME: ${{ vars.AKS_CLUSTER_NAME_PROD }}
   HELM_RELEASE: venueops
   HELM_NAMESPACE: venueops-prod
+  APP_URL: ${{ vars.PROD_APP_URL }}
 
 jobs:
   production-render:
@@ -87,3 +88,7 @@ jobs:
         run: |
           kubectl -n "$HELM_NAMESPACE" rollout status deployment/venueops-api --timeout=300s
           kubectl -n "$HELM_NAMESPACE" get pods
+
+      - name: Post-deploy smoke test
+        run: |
+          APP_URL="$APP_URL" bash scripts/post-deploy-smoke.sh

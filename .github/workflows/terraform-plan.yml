@@ -1,0 +1,81 @@
+name: Terraform Plan
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to plan"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+  pull_request:
+    branches:
+      - main
+      - dev
+    paths:
+      - "infra/terraform/**"
+      - ".github/workflows/terraform-plan.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  terraform-plan:
+    name: Terraform plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    defaults:
+      run:
+        working-directory: infra/terraform
+
+    env:
+      TF_ENV: ${{ github.event.inputs.environment || 'dev' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.8.5
+
+      - name: Terraform fmt check
+        run: |
+          terraform fmt -recursive -check
+
+      - name: Terraform init without backend
+        run: |
+          terraform init -backend=false
+
+      - name: Terraform validate
+        run: |
+          terraform validate
+
+      - name: Render plan command evidence
+        run: |
+          mkdir -p ../../docs/evidence
+          {
+            echo "# Terraform Plan Evidence"
+            echo ""
+            date -u
+            echo ""
+            echo "Environment: ${TF_ENV}"
+            echo ""
+            echo "This workflow validates Terraform and records the plan command."
+            echo "A live Azure plan requires Azure OIDC credentials and remote state."
+            echo ""
+            echo "Production command:"
+            echo "terraform plan -var-file=envs/${TF_ENV}/${TF_ENV}.tfvars -out=tfplan"
+          } > ../../docs/evidence/terraform-plan-${TF_ENV}.txt
+
+      - name: Upload Terraform plan evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan-evidence
+          path: docs/evidence/terraform-plan-${{ env.TF_ENV }}.txt
