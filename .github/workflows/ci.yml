@@ -68,47 +68,41 @@ jobs:
           docker compose up -d --force-recreate --renew-anon-volumes
           docker compose ps
 
-      - name: Wait for services to become healthy
+      - name: Wait for services
         run: |
-          echo "Waiting for web dashboard..."
-          for i in {1..60}; do
-            if curl -fsS http://localhost:3000/health.html >/dev/null; then
-              echo "web is ready"
-              break
-            fi
-            echo "web not ready yet... attempt $i"
-            sleep 2
-          done
+          wait_for_url() {
+            local name="$1"
+            local url="$2"
+            local attempts="${3:-90}"
 
-          echo "Waiting for backend API..."
-          for i in {1..60}; do
-            if curl -fsS http://localhost:8000/health >/dev/null; then
-              echo "backend API is ready"
-              break
-            fi
-            echo "backend API not ready yet... attempt $i"
-            docker compose ps || true
-            sleep 2
-          done
+            echo "Waiting for $name at $url"
 
-          echo "Waiting for ingestion API..."
-          for i in {1..60}; do
-            if curl -fsS http://localhost:8001/health >/dev/null; then
-              echo "ingestion API is ready"
-              break
-            fi
-            echo "ingestion API not ready yet... attempt $i"
+            for i in $(seq 1 "$attempts"); do
+              if curl -fsS "$url" >/dev/null 2>&1; then
+                echo "PASSED: $name is ready"
+                return 0
+              fi
+
+              echo "$name not ready yet... attempt $i/$attempts"
+              docker compose ps || true
+              sleep 2
+            done
+
+            echo "FAILED: $name did not become ready"
             docker compose ps || true
-            sleep 2
-          done
+            docker compose logs --tail=200 api || true
+            docker compose logs --tail=200 ingestion-api || true
+            docker compose logs --tail=200 web || true
+            exit 1
+          }
+
+          wait_for_url "web dashboard" "http://127.0.0.1:3000/health.html" 90
+          wait_for_url "backend API" "http://127.0.0.1:8000/health" 90
+          wait_for_url "ingestion API" "http://127.0.0.1:8001/health" 90
+          wait_for_url "Prometheus" "http://127.0.0.1:9090/-/ready" 90
 
           echo "Final service status:"
           docker compose ps
-
-          echo "Final health checks:"
-          curl -fsS http://localhost:3000/health.html
-          curl -fsS http://localhost:8000/health
-          curl -fsS http://localhost:8001/health
 
       - name: Run smoke test
         run: |
@@ -116,9 +110,9 @@ jobs:
 
       - name: Check observability endpoints
         run: |
-          curl -sS http://localhost:8000/metrics | grep venueops_api
-          curl -sS http://localhost:8001/metrics | grep venueops_ingestion
-          curl -sS "http://localhost:9090/api/v1/query?query=up" | grep venueops-api
+          curl -fsS http://127.0.0.1:8000/metrics | grep venueops_api
+          curl -fsS http://127.0.0.1:8001/metrics | grep venueops_ingestion
+          curl -fsS "http://127.0.0.1:9090/api/v1/query?query=up" | grep venueops-api
 
       - name: Generate evidence
         if: always()
