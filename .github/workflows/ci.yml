@@ -21,8 +21,8 @@ jobs:
     timeout-minutes: 25
 
     env:
-      COMPOSE_PARALLEL_LIMIT: 1
       COMPOSE_PROJECT_NAME: venueops-ci-${{ github.run_id }}
+      COMPOSE_PARALLEL_LIMIT: 1
 
     steps:
       - name: Checkout repository
@@ -43,14 +43,43 @@ jobs:
           docker volume prune -f || true
           docker system df || true
 
+      - name: Pre-create named volumes and data directories
+        run: |
+          docker volume create "${COMPOSE_PROJECT_NAME}_venueops_data"
+          docker volume create "${COMPOSE_PROJECT_NAME}_prometheus_data"
+          docker volume create "${COMPOSE_PROJECT_NAME}_grafana_data"
+
+          docker run --rm \
+            -v "${COMPOSE_PROJECT_NAME}_venueops_data:/data" \
+            alpine:3.20 \
+            sh -c '
+              mkdir -p /data/queues /data/processed /data/audit /data/db
+              touch /data/queues/device_logs.jsonl
+              touch /data/queues/jobs.jsonl
+              ls -la /data
+              ls -la /data/processed
+            '
+
       - name: Build local services
         run: |
           docker compose build --no-cache
 
-      - name: Start local platform
+      - name: Start infrastructure services
         run: |
-          docker compose up -d --force-recreate --renew-anon-volumes
-          sleep 20
+          docker compose up -d --force-recreate prometheus grafana
+          sleep 5
+          docker compose ps
+
+      - name: Start application APIs
+        run: |
+          docker compose up -d --force-recreate api ingestion-api web
+          sleep 15
+          docker compose ps
+
+      - name: Start workers
+        run: |
+          docker compose up -d --force-recreate log-processor video-processor notification-worker
+          sleep 15
           docker compose ps
 
       - name: Run smoke test
@@ -81,6 +110,7 @@ jobs:
           docker compose ps || true
           docker compose logs --tail=300 || true
           docker volume ls || true
+          docker run --rm -v "${COMPOSE_PROJECT_NAME}_venueops_data:/data" alpine:3.20 sh -c "find /data -maxdepth 3 -print -exec ls -ld {} \;" || true
 
       - name: Stop local platform
         if: always()
