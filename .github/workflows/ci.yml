@@ -9,6 +9,7 @@ on:
     branches:
       - main
       - dev
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -17,7 +18,10 @@ jobs:
   docker-compose-smoke-test:
     name: Docker Compose smoke test
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
+
+    env:
+      COMPOSE_PARALLEL_LIMIT: 1
 
     steps:
       - name: Checkout repository
@@ -28,22 +32,31 @@ jobs:
           docker --version
           docker compose version
 
+      - name: Clean previous Docker state
+        run: |
+          docker compose down -v --remove-orphans || true
+          docker volume prune -f || true
+          docker system df || true
+
       - name: Build local services
         run: |
-          docker compose build
+          docker compose build --no-cache
 
       - name: Start local platform
         run: |
-          docker compose up -d
-
-      - name: Wait for services
-        run: |
-          sleep 10
+          docker compose up -d --force-recreate --renew-anon-volumes
+          sleep 15
           docker compose ps
 
       - name: Run smoke test
         run: |
           bash scripts/smoke-test.sh
+
+      - name: Check observability endpoints
+        run: |
+          curl -sS http://localhost:8000/metrics | grep venueops_api
+          curl -sS http://localhost:8001/metrics | grep venueops_ingestion
+          curl -sS "http://localhost:9090/api/v1/query?query=up" | grep venueops-api
 
       - name: Generate evidence
         if: always()
@@ -60,9 +73,10 @@ jobs:
       - name: Show logs on failure
         if: failure()
         run: |
-          docker compose logs --tail=200
+          docker compose ps || true
+          docker compose logs --tail=300 || true
 
       - name: Stop local platform
         if: always()
         run: |
-          docker compose down --remove-orphans
+          docker compose down -v --remove-orphans || true
