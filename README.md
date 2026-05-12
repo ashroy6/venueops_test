@@ -896,3 +896,6 @@ GitHub Actions validates CI, security, image scanning, SBOM, Terraform, Helm, KE
 The architecture uses Cloudflare at the edge, Azure Application Gateway WAF, private AKS, private data subnet, private endpoints, Azure Event Hubs, Azure Service Bus, Blob Storage, PostgreSQL, Key Vault, ACR, Azure Monitor, Log Analytics, Application Insights, Managed Prometheus, and Managed Grafana.
 
 The project demonstrates cloud/platform engineering thinking across security, scalability, reliability, resiliency, observability, automation, and audit evidence.
+
+
+## Thanks for viewing--Ashish Dev ashroy6@gmail.com
