@@ -43,7 +43,7 @@ jobs:
           docker volume prune -f || true
           docker system df || true
 
-      - name: Pre-create named volumes and data directories
+      - name: Pre-create named volumes and writable data directories
         run: |
           docker volume create "${COMPOSE_PROJECT_NAME}_venueops_data"
           docker volume create "${COMPOSE_PROJECT_NAME}_prometheus_data"
@@ -56,7 +56,11 @@ jobs:
               mkdir -p /data/queues /data/processed /data/audit /data/db
               touch /data/queues/device_logs.jsonl
               touch /data/queues/jobs.jsonl
+              chmod -R 0777 /data
+              echo "Prepared writable /data volume:"
               ls -la /data
+              ls -la /data/db
+              ls -la /data/processed
             '
 
       - name: Build local services
@@ -90,9 +94,10 @@ jobs:
 
             echo "FAILED: $name did not become ready"
             docker compose ps || true
-            docker compose logs --tail=200 api || true
-            docker compose logs --tail=200 ingestion-api || true
-            docker compose logs --tail=200 web || true
+            docker compose logs --tail=300 api || true
+            docker compose logs --tail=300 ingestion-api || true
+            docker compose logs --tail=300 web || true
+            docker run --rm -v "${COMPOSE_PROJECT_NAME}_venueops_data:/data" alpine:3.20 sh -c "find /data -maxdepth 3 -print -exec ls -ld {} \;" || true
             exit 1
           }
 
