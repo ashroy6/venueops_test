@@ -86,21 +86,21 @@ The local version runs without Azure credentials. Production mode is designed to
 
 ### Production Cloud / Network Architecture
 
-This is the most detailed production cloud diagram. It includes Azure VNet, public/DMZ subnet, private AKS subnet, private data subnet, private endpoints subnet, Cloudflare, Application Gateway WAF, AKS workloads, Azure managed services, observability, and external providers.
+This is the most detailed production cloud diagram. It includes the Azure subscription, VNet, public/DMZ subnet, private AKS subnet, private data subnet, private endpoints subnet, Cloudflare, Application Gateway WAF, AKS workloads, Azure managed services, observability, and external providers.
 
-![VenueOps Production Cloud Network Architecture](docs/diagrams/venueops-production-cloud-network-architecture.png)
+![VenueOps Production Cloud Network Architecture](docs/diagrams/venueops_cloud.png)
 
 ### Production Azure Architecture
 
 This diagram shows the high-level production Azure design with Cloudflare at the edge, Application Gateway WAF, AKS workloads, Event Hubs, Service Bus, Blob Storage, PostgreSQL, Key Vault, ACR, and Azure observability services.
 
-![VenueOps Production Azure Architecture](docs/diagrams/venueops-production-azure-architecture.png)
+![VenueOps Production Azure Architecture](docs/diagrams/venueops_production.png)
 
 ### Local Testing Architecture
 
 This diagram shows the local Docker Compose testing setup with local services, mock queues, SQLite, Prometheus, Grafana, and validation flow.
 
-![VenueOps Local Testing Architecture](docs/diagrams/venueops-local-testing-architecture.png)
+![VenueOps Local Testing Architecture](docs/diagrams/venueops_local.png)
 
 ---
 
@@ -110,25 +110,25 @@ This diagram shows the local Docker Compose testing setup with local services, m
 
 The repository includes CI/CD workflows for app validation, security scanning, image scanning/SBOM, Terraform validation, Helm validation, deployment rendering, rollback, and evidence packaging.
 
-![GitHub Actions Green Runs](docs/screenshots/github-actions-green-runs.png)
+![GitHub Actions Green Runs](docs/screenshots/github_pipelines.png)
 
 ### Local Admin Dashboard
 
 The local web dashboard proves the frontend, backend API, ingestion API, and demo actions are running through Docker Compose.
 
-![VenueOps Local Admin Dashboard](docs/screenshots/local-admin-dashboard.png)
+![VenueOps Local Admin Dashboard](docs/screenshots/localhost_ui.png)
 
 ### Grafana Dashboard
 
 The local Grafana dashboard proves Prometheus is scraping application and worker metrics.
 
-![VenueOps Grafana Dashboard](docs/screenshots/grafana-venueops-dashboard.png)
+![VenueOps Grafana Dashboard](docs/screenshots/grafanna.png)
 
 ### Final Validation Evidence
 
 The final validation file proves Docker Compose config, smoke test, Terraform validation, Helm lint, Helm template rendering, workflow file checks, documentation checks, and observability endpoint checks all passed.
 
-![Final Validation Evidence](docs/screenshots/final-validation-evidence.png)
+![Final Validation Evidence](docs/screenshots/final_validation.png)
 
 ---
 
