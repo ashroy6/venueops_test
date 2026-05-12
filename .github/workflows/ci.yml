@@ -18,7 +18,7 @@ jobs:
   docker-compose-smoke-test:
     name: Docker Compose smoke test
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
 
     env:
       COMPOSE_PROJECT_NAME: venueops-ci-${{ github.run_id }}
@@ -57,30 +57,58 @@ jobs:
               touch /data/queues/device_logs.jsonl
               touch /data/queues/jobs.jsonl
               ls -la /data
-              ls -la /data/processed
             '
 
       - name: Build local services
         run: |
           docker compose build --no-cache
 
-      - name: Start infrastructure services
+      - name: Start local platform
         run: |
-          docker compose up -d --force-recreate prometheus grafana
-          sleep 5
+          docker compose up -d --force-recreate --renew-anon-volumes
           docker compose ps
 
-      - name: Start application APIs
+      - name: Wait for services to become healthy
         run: |
-          docker compose up -d --force-recreate api ingestion-api web
-          sleep 15
+          echo "Waiting for web dashboard..."
+          for i in {1..60}; do
+            if curl -fsS http://localhost:3000/health.html >/dev/null; then
+              echo "web is ready"
+              break
+            fi
+            echo "web not ready yet... attempt $i"
+            sleep 2
+          done
+
+          echo "Waiting for backend API..."
+          for i in {1..60}; do
+            if curl -fsS http://localhost:8000/health >/dev/null; then
+              echo "backend API is ready"
+              break
+            fi
+            echo "backend API not ready yet... attempt $i"
+            docker compose ps || true
+            sleep 2
+          done
+
+          echo "Waiting for ingestion API..."
+          for i in {1..60}; do
+            if curl -fsS http://localhost:8001/health >/dev/null; then
+              echo "ingestion API is ready"
+              break
+            fi
+            echo "ingestion API not ready yet... attempt $i"
+            docker compose ps || true
+            sleep 2
+          done
+
+          echo "Final service status:"
           docker compose ps
 
-      - name: Start workers
-        run: |
-          docker compose up -d --force-recreate log-processor video-processor notification-worker
-          sleep 15
-          docker compose ps
+          echo "Final health checks:"
+          curl -fsS http://localhost:3000/health.html
+          curl -fsS http://localhost:8000/health
+          curl -fsS http://localhost:8001/health
 
       - name: Run smoke test
         run: |
