@@ -19,17 +19,18 @@ This repository is intentionally built as a **cloud/platform engineering project
 9. [Infrastructure as Code](#infrastructure-as-code)
 10. [AKS and Kubernetes Deployment](#aks-and-kubernetes-deployment)
 11. [CI/CD Pipelines](#cicd-pipelines)
-12. [Observability](#observability)
-13. [Database and Data Flow](#database-and-data-flow)
-14. [Scalability](#scalability)
-15. [Reliability and Resiliency](#reliability-and-resiliency)
-16. [Security Controls](#security-controls)
-17. [Evidence and Validation](#evidence-and-validation)
-18. [Production Readiness Additions](#production-readiness-additions)
-19. [Repository Structure](#repository-structure)
-20. [Important Commands](#important-commands)
-21. [Honest Limitations](#honest-limitations)
-22. [Interview Summary](#interview-summary)
+12. [Expected CI/CD Trigger Behavior](#expected-cicd-trigger-behavior)
+13. [Observability](#observability)
+14. [Database and Data Flow](#database-and-data-flow)
+15. [Scalability](#scalability)
+16. [Reliability and Resiliency](#reliability-and-resiliency)
+17. [Security Controls](#security-controls)
+18. [Evidence and Validation](#evidence-and-validation)
+19. [Production Readiness Additions](#production-readiness-additions)
+20. [Repository Structure](#repository-structure)
+21. [Important Commands](#important-commands)
+22. [Honest Limitations](#honest-limitations)
+23. [Interview Summary](#interview-summary)
 
 ---
 
@@ -360,7 +361,7 @@ Terraform modules include:
 - Event Hubs
 - Service Bus
 - PostgreSQL
-- Redis design path
+- Redis design path for hot config and device state
 - Monitoring
 - Application Gateway WAF
 - Cloudflare design marker
@@ -454,6 +455,9 @@ Validation pipelines run automatically.
 Production deployment pipelines are manual and approval-gated.
 Rollback is manual.
 ```
+
+---
+
 ## Expected CI/CD Trigger Behavior
 
 Not every workflow runs on every push. This is intentional.
@@ -492,6 +496,8 @@ Validation = automatic when relevant
 Deployment = controlled/manual
 Production = approval-gated
 Rollback = manual emergency action
+```
+
 ---
 
 ## Observability
