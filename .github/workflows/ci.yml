@@ -22,6 +22,7 @@ jobs:
 
     env:
       COMPOSE_PARALLEL_LIMIT: 1
+      COMPOSE_PROJECT_NAME: venueops-ci-${{ github.run_id }}
 
     steps:
       - name: Checkout repository
@@ -31,10 +32,14 @@ jobs:
         run: |
           docker --version
           docker compose version
+          echo "COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME"
 
       - name: Clean previous Docker state
         run: |
           docker compose down -v --remove-orphans || true
+          docker volume rm "${COMPOSE_PROJECT_NAME}_venueops_data" || true
+          docker volume rm "${COMPOSE_PROJECT_NAME}_prometheus_data" || true
+          docker volume rm "${COMPOSE_PROJECT_NAME}_grafana_data" || true
           docker volume prune -f || true
           docker system df || true
 
@@ -45,7 +50,7 @@ jobs:
       - name: Start local platform
         run: |
           docker compose up -d --force-recreate --renew-anon-volumes
-          sleep 15
+          sleep 20
           docker compose ps
 
       - name: Run smoke test
@@ -75,6 +80,7 @@ jobs:
         run: |
           docker compose ps || true
           docker compose logs --tail=300 || true
+          docker volume ls || true
 
       - name: Stop local platform
         if: always()

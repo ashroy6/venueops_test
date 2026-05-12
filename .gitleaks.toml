@@ -1,0 +1,16 @@
+title = "VenueOps Gitleaks Config"
+
+[allowlist]
+description = "Allow safe documentation placeholders only"
+regexes = [
+  '''REDACTED''',
+  '''<set-in-github-secrets>''',
+  '''<set-in-key-vault-or-github-secrets>''',
+  '''EXAMPLE_[A-Z0-9_]+''',
+  '''DATABASE_PASSWORD="<set-in-key-vault-or-github-secrets>"''',
+  '''EXAMPLE_PACKAGE_TOKEN="<set-in-github-secrets>"'''
+]
+paths = [
+  '''README.md''',
+  '''docs/.*'''
+]

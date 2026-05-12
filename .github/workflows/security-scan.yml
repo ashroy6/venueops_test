@@ -39,6 +39,7 @@ jobs:
           gitleaks detect \
             --source . \
             --no-git \
+            --config .gitleaks.toml \
             --redact \
             --verbose
 
