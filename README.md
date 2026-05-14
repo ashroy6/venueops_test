@@ -1,8 +1,8 @@
-# VenueOps Agentic AI Cloud Platform — Interview Demo README
+# VenueOps Agentic AI Cloud Platform — Demo README
 
-Production-shaped DevOps interview project for a venue operations platform on **Azure + Cloudflare**, with **AKS**, **Terraform**, **Helm**, **GitHub Actions**, **Prometheus/Grafana**, and an **Agentic AI Ops incident response layer**.
+Production-shaped DevOps demo project for a venue operations platform on **Azure + Cloudflare**, with **AKS**, **Terraform**, **Helm**, **GitHub Actions**, **Prometheus/Grafana**, and an **Agentic AI Ops incident response layer**.
 
-This repository is not a full business product. It is an interview demo focused on showing cloud architecture, infrastructure automation, CI/CD, observability, security, reliability, and operational response.
+This repository is not a full business product. It is an demo focused on showing cloud architecture, infrastructure automation, CI/CD, observability, security, reliability, and operational response.
 
 ---
 
@@ -24,7 +24,6 @@ This repository is not a full business product. It is an interview demo focused 
 14. [Repository Structure](#repository-structure)
 15. [Important Commands](#important-commands)
 16. [Honest Limitations](#honest-limitations)
-17. [Interview Talk Track](#interview-talk-track)
 
 ---
 
@@ -65,7 +64,7 @@ The demo proves the main engineering patterns:
 - approved runbook execution with human-in-the-loop control
 - CI/CD validation with GitHub Actions
 - Terraform and Helm validation
-- evidence generation for interview review
+- evidence generation for demo review
 
 ---
 
@@ -73,7 +72,7 @@ The demo proves the main engineering patterns:
 
 ### Production Cloud Architecture with AI Ops
 
-This is the main architecture diagram for the interview. It shows Cloudflare, Azure Application Gateway WAF, private AKS workloads, managed Azure services, observability, external providers, and the AI Ops layer.
+This is the main architecture diagram for the demo. It shows Cloudflare, Azure Application Gateway WAF, private AKS workloads, managed Azure services, observability, external providers, and the AI Ops layer.
 
 ![VenueOps Production Cloud Architecture](docs/diagrams/venueops_cloud.png)
 
@@ -327,7 +326,7 @@ The demo supports production-style incident scenarios:
 | API 5xx fault | API error/fault metric | Roll back release | Disable bad release flag |
 | Device offline | Offline device metric | Investigate connectivity | Simulate heartbeat recovery |
 
-Important interview wording:
+Important demo wording:
 
 ```text
 The local remediation is safe and simulated.
@@ -713,7 +712,7 @@ Current limitations:
 - AI Ops remediation is safe and simulated locally
 - production branch protection and environment approvals must be configured in GitHub settings
 
-This is intentional for the interview. The repo proves the architecture, automation, validation, observability, and operational workflow without requiring paid cloud resources.
+This is intentional for the demo. The repo proves the architecture, automation, validation, observability, and operational workflow without requiring paid cloud resources.
 
 ---
 
