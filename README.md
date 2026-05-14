@@ -569,225 +569,51 @@ Current repository structure, including source files:
 .
 ├── Makefile
 ├── README.md
-├── aiops
+├── docker-compose.yml
+├── aiops/
 │   ├── Dockerfile
 │   ├── README.md
 │   ├── requirements.txt
-│   ├── runbooks
-│   │   ├── investigate_device_connectivity.yaml
-│   │   ├── investigate_provider_failure.yaml
-│   │   ├── restart_api.yaml
-│   │   ├── rollback_release.yaml
-│   │   └── scale_ingestion_api.yaml
-│   ├── src
-│   │   ├── audit_store.py
-│   │   ├── config.py
-│   │   ├── evidence_collector.py
-│   │   ├── incident_analyzer.py
-│   │   ├── main.py
-│   │   ├── ollama_client.py
-│   │   ├── prometheus_client.py
-│   │   ├── runbook_registry.py
-│   │   └── verifier.py
-│   └── tests
-├── apps
-│   ├── api
-│   │   ├── Dockerfile
-│   │   ├── requirements.txt
-│   │   ├── src
-│   │   │   ├── db.py
-│   │   │   ├── main.py
-│   │   │   ├── messaging.py
-│   │   │   ├── ops_state.py
-│   │   │   └── telemetry.py
-│   │   └── tests
-│   ├── ingestion-api
-│   │   ├── Dockerfile
-│   │   ├── requirements.txt
-│   │   ├── src
-│   │   │   ├── eventhub_client.py
-│   │   │   ├── main.py
-│   │   │   └── telemetry.py
-│   │   └── tests
-│   ├── web
-│   │   ├── Dockerfile
-│   │   ├── nginx.conf
-│   │   ├── public
-│   │   │   ├── health.html
-│   │   │   └── index.html
-│   │   ├── src
-│   │   └── tests
-│   └── workers
-│       ├── log-processor
-│       │   ├── Dockerfile
-│       │   ├── requirements.txt
-│       │   ├── src
-│       │   └── tests
-│       ├── notification-worker
-│       │   ├── Dockerfile
-│       │   ├── requirements.txt
-│       │   ├── src
-│       │   └── tests
-│       └── video-processor
-│           ├── Dockerfile
-│           ├── requirements.txt
-│           ├── src
-│           └── tests
-├── config
-│   ├── dev
-│   ├── prod
-│   └── staging
-├── dist
+│   ├── runbooks/
+│   ├── src/
+│   └── tests/
+├── apps/
+│   ├── api/
+│   ├── ingestion-api/
+│   ├── web/
+│   └── workers/
+├── config/
+│   ├── dev/
+│   ├── prod/
+│   └── staging/
+├── dist/
 │   └── venueops-evidence-pack-20260512T154037Z.zip
-├── docker-compose.yml
-├── docs
-│   ├── aks-hardening.md
-│   ├── architecture.md
-│   ├── automation.md
-│   ├── branch-protection.md
-│   ├── cloudflare-app-gateway.md
-│   ├── database.md
-│   ├── decisions
-│   ├── diagrams
-│   │   ├── architecture.mmd
-│   │   ├── local-demo.mmd
-│   │   ├── venueops_cloud.png
-│   │   ├── venueops_local.png
-│   │   └── venueops_production.png
-│   ├── evidence
-│   │   ├── README.md
-│   │   ├── backend-api-health.txt
-│   │   ├── batch-10-cloudflare-appgateway.txt
-│   │   ├── batch-11-keda-aks-hardening.txt
-│   │   ├── batch-7-azure-wiring.txt
-│   │   ├── batch-8-database-wiring.txt
-│   │   ├── batch-9-1-local-grafana-prometheus.txt
-│   │   ├── docker-compose-status.txt
-│   │   ├── docs-inventory.txt
-│   │   ├── final-docker-compose-status.txt
-│   │   ├── final-docs-files.txt
-│   │   ├── final-github-actions.txt
-│   │   ├── final-helm-files.txt
-│   │   ├── final-project-tree.txt
-│   │   ├── final-prometheus-targets.txt
-│   │   ├── final-terraform-files.txt
-│   │   ├── final-validation.txt
-│   │   ├── github-actions-workflows.txt
-│   │   ├── helm-lint.txt
-│   │   ├── ingestion-api-health.txt
-│   │   ├── local-smoke-test.txt
-│   │   ├── log-processor-evidence.txt
-│   │   ├── notification-worker-evidence.txt
-│   │   ├── terraform-validate.txt
-│   │   └── video-worker-evidence.txt
-│   ├── final-interview-script.md
-│   ├── interview-walkthrough.md
-│   ├── observability.md
-│   ├── production-approval.md
-│   ├── reliability.md
-│   ├── resiliency.md
-│   ├── runbooks
-│   ├── scalability.md
-│   ├── screenshots
-│   │   ├── final_validation.png
-│   │   ├── github_pipelines.png
-│   │   ├── grafanna.png
-│   │   └── localhost_ui.png
-│   ├── security.md
-│   ├── submission-checklist.md
-│   └── tradeoffs.md
-├── infra
-│   ├── helm
-│   │   ├── otel-collector
-│   │   └── venueops
-│   │       ├── Chart.yaml
-│   │       ├── templates
-│   │       ├── values-dev.yaml
-│   │       ├── values-prod.yaml
-│   │       └── values.yaml
-│   ├── kubernetes
-│   │   ├── base
-│   │   │   ├── api
-│   │   │   ├── hpa
-│   │   │   ├── ingestion-api
-│   │   │   ├── ingress
-│   │   │   ├── keda
-│   │   │   ├── namespace
-│   │   │   ├── network-policies
-│   │   │   ├── observability
-│   │   │   ├── pdb
-│   │   │   ├── secrets
-│   │   │   ├── web
-│   │   │   └── workers
-│   │   └── overlays
-│   │       ├── dev
-│   │       ├── prod
-│   │       └── staging
-│   ├── policies
-│   │   ├── kyverno
-│   │   └── opa
-│   ├── security
-│   │   ├── checkov
-│   │   ├── gitleaks
-│   │   ├── semgrep
-│   │   └── trivy
-│   └── terraform
-│       ├── envs
-│       │   ├── dev
-│       │   ├── prod
-│       │   └── staging
-│       ├── main.tf
-│       ├── modules
-│       │   ├── acr
-│       │   ├── aks
-│       │   ├── application-gateway
-│       │   ├── cloudflare
-│       │   ├── event-hubs
-│       │   ├── key-vault
-│       │   ├── monitoring
-│       │   ├── network
-│       │   ├── postgresql
-│       │   ├── redis
-│       │   ├── resource-group
-│       │   ├── service-bus
-│       │   └── storage
-│       ├── outputs.tf
-│       ├── providers.tf
-│       ├── variables.tf
-│       └── versions.tf
-├── local
-│   ├── mock-eventhub
-│   ├── mock-servicebus
-│   ├── postgres-init
-│   └── sample-data
-│       ├── devices
-│       ├── logs
-│       └── videos
-├── observability
-│   ├── alertmanager
-│   │   └── alertmanager.yml
-│   ├── grafana
-│   │   ├── dashboards
-│   │   │   └── venueops-overview.json
-│   │   └── provisioning
-│   │       ├── dashboards
-│   │       └── datasources
-│   ├── log-analytics
-│   │   └── kql
-│   │       ├── api-errors.kql
-│   │       ├── audit-events.kql
-│   │       └── worker-processing.kql
-│   ├── otel
-│   │   └── README.md
-│   └── prometheus
-│       ├── prometheus.yml
-│       └── rules
-│           └── venueops-alerts.yaml
-├── packages
-│   ├── contracts
-│   └── shared
-│       └── src
-├── scripts
+├── docs/
+│   ├── diagrams/
+│   ├── evidence/
+│   ├── screenshots/
+│   └── *.md
+├── infra/
+│   ├── helm/
+│   ├── kubernetes/
+│   ├── policies/
+│   ├── security/
+│   └── terraform/
+├── local/
+│   ├── mock-eventhub/
+│   ├── mock-servicebus/
+│   ├── postgres-init/
+│   └── sample-data/
+├── observability/
+│   ├── alertmanager/
+│   ├── grafana/
+│   ├── log-analytics/
+│   ├── otel/
+│   └── prometheus/
+├── packages/
+│   ├── contracts/
+│   └── shared/
+├── scripts/
 │   ├── build-evidence-pack.sh
 │   ├── final-evidence.sh
 │   ├── final-validate.sh
@@ -797,14 +623,16 @@ Current repository structure, including source files:
 │   ├── local-up.sh
 │   ├── post-deploy-smoke.sh
 │   └── smoke-test.sh
-├── tests
-│   ├── integration
-│   ├── load
-│   ├── security
-│   └── smoke
-├── tools
-└── uploads
+├── tests/
+│   ├── integration/
+│   ├── load/
+│   ├── security/
+│   └── smoke/
+├── tools/
+└── uploads/
     └── aiops-alertmanager-runbook-flow-review.zip
+```
+
 ```
 
 The repo currently contains:
