@@ -77,11 +77,6 @@ This is the main architecture diagram for the interview. It shows Cloudflare, Az
 
 ![VenueOps Production Cloud Architecture](docs/diagrams/venueops_cloud.png)
 
-### Production Azure Architecture
-
-High-level Azure production design.
-
-![VenueOps Production Azure Architecture](docs/diagrams/venueops_production.png)
 
 ### Local Testing Architecture
 
