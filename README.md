@@ -1,105 +1,91 @@
-# VenueOps Cloud Platform
+# VenueOps AI Cloud Platform — Interview Demo README
 
-Production-shaped DevOps interview project for designing, deploying, securing, monitoring, and operating an Azure platform protected by Cloudflare at the edge.
+Production-shaped DevOps interview project for a venue operations platform on **Azure + Cloudflare**, with **AKS**, **Terraform**, **Helm**, **GitHub Actions**, **Prometheus/Grafana**, and an **Agentic AI Ops incident response layer**.
 
-This repository is intentionally built as a **cloud/platform engineering project**, not as a full business application. The app code is lightweight so the focus stays on production architecture, CI/CD, infrastructure as code, AKS deployment, observability, security, reliability, scalability, resiliency, automation, and operational evidence.
+This repository is not a full business product. It is an interview demo focused on showing cloud architecture, infrastructure automation, CI/CD, observability, security, reliability, and operational response.
 
 ---
 
 ## Index
 
 1. [Project Summary](#project-summary)
-2. [What This Platform Supports](#what-this-platform-supports)
+2. [What the Demo Shows](#what-the-demo-shows)
 3. [Architecture Diagrams](#architecture-diagrams)
 4. [Screenshots and Proof](#screenshots-and-proof)
 5. [Local Demo](#local-demo)
-6. [What the Local Demo Proves](#what-the-local-demo-proves)
-7. [Production Design](#production-design)
-8. [Networking and Security Design](#networking-and-security-design)
+6. [Running Services](#running-services)
+7. [Production Architecture](#production-architecture)
+8. [AI Ops and Agentic AI Flow](#ai-ops-and-agentic-ai-flow)
 9. [Infrastructure as Code](#infrastructure-as-code)
-10. [AKS and Kubernetes Deployment](#aks-and-kubernetes-deployment)
-11. [CI/CD Pipelines](#cicd-pipelines)
-12. [Expected CI/CD Trigger Behavior](#expected-cicd-trigger-behavior)
-13. [Observability](#observability)
-14. [Database and Data Flow](#database-and-data-flow)
-15. [Scalability](#scalability)
-16. [Reliability and Resiliency](#reliability-and-resiliency)
-17. [Security Controls](#security-controls)
-18. [Evidence and Validation](#evidence-and-validation)
-19. [Production Readiness Additions](#production-readiness-additions)
-20. [Repository Structure](#repository-structure)
-21. [Important Commands](#important-commands)
-22. [Honest Limitations](#honest-limitations)
-23. [Interview Summary](#interview-summary)
+10. [AKS and Kubernetes](#aks-and-kubernetes)
+11. [CI/CD](#cicd)
+12. [Observability](#observability)
+13. [Security, Scalability, and Reliability](#security-scalability-and-reliability)
+14. [Repository Structure](#repository-structure)
+15. [Important Commands](#important-commands)
+16. [Honest Limitations](#honest-limitations)
+17. [Interview Talk Track](#interview-talk-track)
 
 ---
 
 ## Project Summary
 
-VenueOps is a production-shaped cloud platform design for a company operating physical venues.
+VenueOps is a production-shaped platform for operating physical venues.
 
-The system supports:
+The platform supports:
 
-- a web admin dashboard used by employees
-- backend APIs for central configuration and operations
-- ingestion of logs/events from in-venue devices
-- asynchronous processing of logs, videos, notifications, and device commands
-- production deployment to Azure Kubernetes Service
-- edge protection through Cloudflare
-- infrastructure automation through Terraform
-- application deployment through Helm
-- CI/CD through GitHub Actions
-- local proof through Docker Compose
-- observability through Prometheus, Grafana, structured logs, and Azure monitoring design
-- operational evidence for interview/demo/audit review
+- a web admin dashboard
+- backend APIs
+- in-venue device/log ingestion
+- asynchronous workers for logs, video, and notifications
+- local Docker Compose proof
+- production Azure AKS design
+- Cloudflare edge protection
+- Terraform infrastructure
+- Helm/Kubernetes deployment packaging
+- GitHub Actions CI/CD
+- Prometheus and Grafana observability
+- Agentic AI Ops incident detection, diagnosis, approval, remediation, verification, and audit
 
-The local version runs without Azure credentials. Production mode is designed to replace local mock services with managed Azure services.
+The local demo runs without Azure credentials. The production design maps the same services to Azure managed services and private AKS workloads.
 
 ---
 
-## What This Platform Supports
+## What the Demo Shows
 
-- Web admin dashboard for central configuration
-- Backend API
-- Device ingestion API
-- Log processor worker
-- Video processor worker
-- Notification worker
-- Async communication between backend and devices
-- SMS/email notification jobs
-- Video processing jobs
-- Device log/event ingestion
-- Audit logging
-- Local Docker Compose demo
-- Terraform infrastructure code
-- Helm AKS deployment packaging
-- KEDA worker autoscaling definitions
-- HPA API autoscaling definitions
-- GitHub Actions CI/CD
-- Security scanning
-- Image scanning and SBOM generation
-- Evidence pack generation
-- Local Prometheus and Grafana dashboards
+The demo proves the main engineering patterns:
+
+- containerized microservices
+- private AKS-style workload layout
+- API, ingestion, and worker separation
+- event-driven and queue-based design
+- observability through Prometheus and Grafana
+- metric-based alerts through Prometheus and Alertmanager
+- AI Ops incident response using a local LLM through Ollama
+- approved runbook execution with human-in-the-loop control
+- CI/CD validation with GitHub Actions
+- Terraform and Helm validation
+- evidence generation for interview review
 
 ---
 
 ## Architecture Diagrams
 
-### Production Cloud / Network Architecture
+### Production Cloud Architecture with AI Ops
 
-This is the most detailed production cloud diagram. It includes the Azure subscription, VNet, public/DMZ subnet, private AKS subnet, private data subnet, private endpoints subnet, Cloudflare, Application Gateway WAF, AKS workloads, Azure managed services, observability, and external providers.
+This is the main architecture diagram for the interview. It shows Cloudflare, Azure Application Gateway WAF, private AKS workloads, managed Azure services, observability, external providers, and the AI Ops layer.
 
-![VenueOps Production Cloud Network Architecture](docs/diagrams/venueops_cloud.png)
+![VenueOps Production Cloud Architecture](docs/diagrams/venueops_cloud.png)
 
 ### Production Azure Architecture
 
-This diagram shows the high-level production Azure design with Cloudflare at the edge, Application Gateway WAF, AKS workloads, Event Hubs, Service Bus, Blob Storage, PostgreSQL, Key Vault, ACR, and Azure observability services.
+High-level Azure production design.
 
 ![VenueOps Production Azure Architecture](docs/diagrams/venueops_production.png)
 
 ### Local Testing Architecture
 
-This diagram shows the local Docker Compose testing setup with local services, mock queues, SQLite, Prometheus, Grafana, and validation flow.
+Local Docker Compose testing setup.
 
 ![VenueOps Local Testing Architecture](docs/diagrams/venueops_local.png)
 
@@ -109,25 +95,17 @@ This diagram shows the local Docker Compose testing setup with local services, m
 
 ### GitHub Actions Green Runs
 
-The repository includes CI/CD workflows for app validation, security scanning, image scanning/SBOM, Terraform validation, Helm validation, deployment rendering, rollback, and evidence packaging.
-
 ![GitHub Actions Green Runs](docs/screenshots/github_pipelines.png)
 
 ### Local Admin Dashboard
-
-The local web dashboard proves the frontend, backend API, ingestion API, and demo actions are running through Docker Compose.
 
 ![VenueOps Local Admin Dashboard](docs/screenshots/localhost_ui.png)
 
 ### Grafana Dashboard
 
-The local Grafana dashboard proves Prometheus is scraping application and worker metrics.
-
 ![VenueOps Grafana Dashboard](docs/screenshots/grafanna.png)
 
 ### Final Validation Evidence
-
-The final validation file proves Docker Compose config, smoke test, Terraform validation, Helm lint, Helm template rendering, workflow file checks, documentation checks, and observability endpoint checks all passed.
 
 ![Final Validation Evidence](docs/screenshots/final_validation.png)
 
@@ -135,33 +113,31 @@ The final validation file proves Docker Compose config, smoke test, Terraform va
 
 ## Local Demo
 
-The local demo runs with Docker Compose.
-
-Start the platform:
+Start the local platform:
 
 ```bash
 make up
 ```
 
-Run the smoke test:
+Run smoke tests:
 
 ```bash
 make smoke
 ```
 
-Generate local evidence:
+Generate evidence:
 
 ```bash
 make evidence
 ```
 
-Run full final validation:
+Run final validation:
 
 ```bash
 bash scripts/final-validate.sh
 ```
 
-Generate final evidence:
+Generate final evidence pack:
 
 ```bash
 bash scripts/final-evidence.sh
@@ -170,14 +146,16 @@ bash scripts/final-evidence.sh
 Open locally:
 
 ```text
-Web dashboard:  http://localhost:3000
-Backend API:    http://localhost:8000/health
-Ingestion API:  http://localhost:8001/health
-Prometheus:     http://localhost:9090
-Grafana:        http://localhost:3001
+Web / Admin UI:  http://localhost:3000
+Backend API:     http://localhost:8000/health
+Ingestion API:   http://localhost:8001/health
+AI Ops API:      http://localhost:8010/health
+Prometheus:      http://localhost:9090
+Alertmanager:    http://localhost:9093
+Grafana:         http://localhost:3001
 ```
 
-Grafana login in local mode:
+Local Grafana login:
 
 ```text
 username: admin
@@ -186,153 +164,181 @@ password: admin
 
 ---
 
-## What the Local Demo Proves
+## Running Services
 
-The local smoke test proves:
+The local Docker Compose demo runs these containers:
 
-- web dashboard is reachable
-- backend API is healthy
-- ingestion API is healthy
-- venues endpoint works
-- devices endpoint works
-- device logs can be accepted
-- log processor handles device logs
-- SMS jobs can be queued
-- email jobs can be queued
-- notification worker processes jobs
-- video jobs can be queued
-- video worker processes jobs
-- observability endpoints are exposed
-- Prometheus can query service availability
+| Service | Purpose |
+|---|---|
+| `web` | Admin UI / frontend |
+| `api` | Backend API for venues, devices, jobs, operational demo actions |
+| `ingestion-api` | Device/log ingestion API |
+| `log-processor` | Processes ingested log/device events |
+| `video-processor` | Processes video jobs |
+| `notification-worker` | Processes SMS/email notification jobs |
+| `prometheus` | Scrapes metrics and evaluates alert rules |
+| `alertmanager` | Routes fired alerts to AI Ops |
+| `grafana` | Dashboards and operational visibility |
+| `aiops` | AI Ops incident response service |
+| `ollama` | Local LLM runtime used by AI Ops |
 
-Local mode uses mock queues:
-
-```text
-Mock Event Hub      = local file-backed device log queue
-Mock Service Bus    = local file-backed job queue
-SQLite              = local DB / PostgreSQL-ready path
-Prometheus/Grafana  = local observability proof
-```
-
-In production, these are replaced by Azure managed services:
+Production mapping:
 
 ```text
-Mock Event Hub   -> Azure Event Hubs
-Mock Service Bus -> Azure Service Bus
-SQLite           -> Azure PostgreSQL
-Local volumes    -> Azure Blob Storage / managed persistence
-Local Grafana    -> Managed Grafana / production observability stack
+Docker Compose containers
+  -> AKS workloads/pods inside the private AKS subnet
 ```
 
 ---
 
-## Production Design
+## Production Architecture
 
-Production traffic flow:
+Production request flow:
 
 ```text
-Users / guests / in-venue devices
+Users / Guests / In-Venue Devices
   -> Cloudflare Edge
   -> Azure Application Gateway WAF
   -> AKS Ingress
   -> AKS workloads
 ```
 
-AKS workloads:
+Private AKS workloads:
 
-- Web Admin Frontend
-- Backend API
-- Device Ingestion API
-- Log Processor Worker
-- Video Processor Worker
-- Notification Worker
+```text
+Application:
+- web
+- api
+- ingestion-api
+- log-processor
+- video-processor
+- notification-worker
 
-Azure managed services:
+Observability:
+- prometheus
+- alertmanager
+- grafana
 
-- Azure Event Hubs for high-volume device logs and telemetry-style ingestion
-- Azure Service Bus for reliable async jobs and device commands
-- Azure Blob Storage for raw logs, uploaded videos, processed videos, and static/media assets
-- Azure PostgreSQL for venues, devices, jobs, configuration, guests, and audit logs
-- Azure Redis for hot configuration and device state
-- Azure Key Vault for secrets and certificates
-- Azure Container Registry for container images
-- Azure Monitor for Azure resource monitoring
-- Log Analytics for centralized logs and KQL analysis
-- Application Insights for application performance and tracing design
-- Managed Prometheus for metrics
-- Managed Grafana for dashboards
+AI Ops:
+- aiops
+- ollama
+```
 
-External providers:
+Managed Azure services:
 
-- SMS provider
-- Email provider
-- Cloudflare CDN for static assets and processed media delivery
+| Azure Service | Purpose |
+|---|---|
+| Azure Container Registry | Stores container images |
+| Azure Blob Storage | Raw logs, uploaded videos, processed videos, static assets |
+| Azure Event Hubs | High-volume device/log streaming ingestion |
+| Azure Service Bus | Reliable jobs, commands, retries, and dead-lettering |
+| Azure PostgreSQL | Venues, devices, jobs, config, audit data |
+| Azure Cache for Redis | Hot config and device state cache |
+| Azure Key Vault | Secrets, keys, certificates |
+| Azure Monitor / Log Analytics | Logs, metrics, diagnostics |
+| Application Insights | Application performance and tracing design |
+| Managed Prometheus / Grafana | Production observability option |
+
+Important flow examples:
+
+```text
+Device logs:
+Device -> Cloudflare -> App Gateway -> ingestion-api -> Event Hubs -> log-processor
+
+Notification jobs:
+api -> Service Bus -> notification-worker -> SMS/Email provider
+
+Video jobs:
+api -> Service Bus -> video-processor -> Blob Storage -> Cloudflare CDN -> users
+
+Metrics and incidents:
+Services -> Prometheus -> Alertmanager -> aiops -> Ollama -> approved runbook -> verification -> audit
+```
 
 ---
 
-## Networking and Security Design
+## AI Ops and Agentic AI Flow
 
-The production cloud architecture uses explicit network segmentation.
-
-Azure VNet:
+The AI Ops service is intentionally **agentic** because it does more than generate text. It follows an operational loop:
 
 ```text
-Virtual Network: 10.0.0.0/16
+Observe -> Analyze -> Plan -> Ask for Approval -> Act -> Verify -> Audit
 ```
 
-Subnets:
+That makes it agentic AI, not just a chatbot.
+
+### Why it is agentic AI
+
+The AI Ops service has:
+
+- a goal: diagnose and help recover operational incidents
+- tools: Prometheus queries, evidence collection, runbook registry, verifier, audit store
+- reasoning: local LLM diagnosis through Ollama
+- planning: selects a safe approved runbook
+- guardrails: only approved runbooks can execute
+- human control: remediation requires operator approval
+- action: executes safe local remediation
+- verification: checks Prometheus metrics and health endpoints after action
+- memory/audit: stores incident history and decisions
+
+### AI Ops Incident Flow
 
 ```text
-Public / DMZ Subnet:        10.0.1.0/24
-Private AKS Subnet:         10.0.2.0/24
-Private Data Subnet:        10.0.3.0/24
-Private Endpoints Subnet:   10.0.4.0/24
+1. Prometheus detects a problem from metrics
+2. Alertmanager sends an alert webhook to aiops
+3. aiops creates an incident
+4. Evidence collector gathers metrics, health status, and context
+5. aiops calls Ollama for diagnosis and recommendation
+6. Runbook registry matches the recommendation to approved YAML runbooks
+7. Human operator reviews and approves/rejects the action in the Admin UI
+8. aiops executes only the approved safe remediation
+9. verifier checks recovery using metrics and health endpoints
+10. audit_store records diagnosis, approval, action, verification, and timestamps
 ```
 
-Public / DMZ subnet contains:
+### AI Ops Files
 
-- Public IP
-- Azure Application Gateway WAF v2
+```text
+aiops/
+├── Dockerfile
+├── README.md
+├── requirements.txt
+├── runbooks/
+│   ├── investigate_device_connectivity.yaml
+│   ├── investigate_provider_failure.yaml
+│   ├── restart_api.yaml
+│   ├── rollback_release.yaml
+│   └── scale_ingestion_api.yaml
+├── src/
+│   ├── audit_store.py
+│   ├── config.py
+│   ├── evidence_collector.py
+│   ├── incident_analyzer.py
+│   ├── main.py
+│   ├── ollama_client.py
+│   ├── prometheus_client.py
+│   ├── runbook_registry.py
+│   └── verifier.py
+└── tests/
+```
 
-Private AKS subnet contains:
+### AI Ops Demo Scenarios
 
-- AKS cluster
-- Kubernetes ingress
-- app workloads
-- HPA
-- KEDA
-- Cluster Autoscaler
-- Workload Identity
-- system/user node pools
+The demo supports production-style incident scenarios:
 
-Private data subnet contains:
+| Scenario | Signal | AI Ops Recommendation | Approved Action |
+|---|---|---|---|
+| Queue backlog | High queue/job metric | Investigate provider failure | Drain/reduce mock backlog |
+| API 5xx fault | API error/fault metric | Roll back release | Disable bad release flag |
+| Device offline | Offline device metric | Investigate connectivity | Simulate heartbeat recovery |
 
-- PostgreSQL Flexible Server
-- Redis Cache
+Important interview wording:
 
-Private endpoints subnet contains private endpoints for:
-
-- Blob Storage
-- Key Vault
-- Service Bus
-- Event Hubs
-- Azure Container Registry
-
-Security design includes:
-
-- Cloudflare WAF/DDoS/rate limiting/bot protection/CDN/TLS
-- Azure Application Gateway WAF
-- private subnets
-- private endpoints
-- Key Vault secrets
-- Managed Identity / Workload Identity
-- RBAC and least privilege
-- Kubernetes NetworkPolicy
-- Pod Security restricted namespace labels
-- audit logs
-- security scanning
-- image scanning
-- SBOM generation
+```text
+The local remediation is safe and simulated.
+The workflow is real: alert -> evidence -> LLM diagnosis -> runbook -> approval -> execution -> verification -> audit.
+In production, the same pattern would map to AKS, Azure Monitor, Service Bus, Event Hubs, device heartbeats, and deployment signals.
+```
 
 ---
 
@@ -344,41 +350,71 @@ Terraform lives under:
 infra/terraform/
 ```
 
+Main Terraform areas:
+
+```text
+infra/terraform/
+├── envs/
+│   ├── dev/
+│   ├── staging/
+│   └── prod/
+├── modules/
+│   ├── acr/
+│   ├── aks/
+│   ├── application-gateway/
+│   ├── cloudflare/
+│   ├── event-hubs/
+│   ├── key-vault/
+│   ├── monitoring/
+│   ├── network/
+│   ├── postgresql/
+│   ├── redis/
+│   ├── resource-group/
+│   ├── service-bus/
+│   └── storage/
+├── main.tf
+├── providers.tf
+├── variables.tf
+├── outputs.tf
+└── versions.tf
+```
+
 Validate Terraform:
 
 ```bash
 terraform -chdir=infra/terraform validate
 ```
 
-Terraform modules include:
-
-- Resource Group
-- Network
-- AKS
-- ACR
-- Key Vault
-- Storage Account
-- Event Hubs
-- Service Bus
-- PostgreSQL
-- Redis design path for hot config and device state
-- Monitoring
-- Application Gateway WAF
-- Cloudflare design marker
-- Private DNS / private endpoint design path
-- Managed Identity / role assignment design path
-
-Terraform covers the production foundation and validates locally without requiring a live Azure deployment.
-
 ---
 
-## AKS and Kubernetes Deployment
+## AKS and Kubernetes
 
-Helm chart lives under:
+Helm chart:
 
 ```text
 infra/helm/venueops/
 ```
+
+Kubernetes manifests:
+
+```text
+infra/kubernetes/base/
+infra/kubernetes/overlays/
+```
+
+Kubernetes design includes:
+
+- Deployments
+- Services
+- Ingress
+- HPA
+- KEDA ScaledObjects
+- PodDisruptionBudgets
+- NetworkPolicy
+- ServiceAccount
+- Key Vault CSI design
+- restricted pod security posture
+- environment overlays for dev, staging, prod
 
 Validate Helm:
 
@@ -386,44 +422,15 @@ Validate Helm:
 helm lint infra/helm/venueops
 ```
 
-Render Helm manifests:
+Render Helm:
 
 ```bash
 helm template venueops infra/helm/venueops --values infra/helm/venueops/values-dev.yaml
 ```
 
-The Helm chart includes:
-
-- Deployments
-- Services
-- Ingress
-- ConfigMap
-- ServiceAccount
-- HPA
-- KEDA ScaledObjects
-- TriggerAuthentication
-- PodDisruptionBudgets
-- NetworkPolicy
-- SecretProviderClass for Key Vault CSI integration
-- resource requests and limits
-- rollout-ready Kubernetes manifests
-
-AKS hardening includes:
-
-- restricted namespace labels
-- service account for workload identity
-- Key Vault CSI design
-- KEDA worker autoscaling
-- HPA API autoscaling
-- Cluster Autoscaler design
-- PDBs
-- NetworkPolicy
-- RBAC design
-- audit and diagnostics design
-
 ---
 
-## CI/CD Pipelines
+## CI/CD
 
 GitHub Actions workflows live under:
 
@@ -431,71 +438,27 @@ GitHub Actions workflows live under:
 .github/workflows/
 ```
 
-Workflow use cases:
+The pipelines cover:
 
-| Pipeline | Purpose |
-|---|---|
-| CI | Builds Docker Compose stack, starts services, runs smoke tests, checks observability endpoints |
-| Security Scan | Runs Gitleaks, Trivy filesystem scan, and Checkov Terraform scan |
-| Image Scan and SBOM | Builds Docker images, scans images, and generates SBOM artifacts |
-| Terraform Validate | Checks Terraform formatting, init, and validation |
-| Terraform Plan | Records/validates Terraform plan path for review before apply |
-| Terraform Apply | Manual infrastructure deployment workflow guarded by environment approval and Azure enablement flag |
-| Helm Validate | Lints and renders Kubernetes manifests |
-| KEDA and AKS Hardening | Validates KEDA objects, TriggerAuthentication, ServiceAccount, and AKS hardening manifests |
-| Deploy Dev | Manual dev deployment/render workflow; can deploy to AKS when Azure variables exist |
-| Deploy Prod | Manual production deployment workflow with production environment approval |
-| Rollback Prod | Manual Helm rollback workflow for production recovery |
-| Evidence Pack | Builds a downloadable evidence bundle for review/audit/interview |
+- application build and smoke tests
+- Docker Compose validation
+- Gitleaks secret scan
+- Trivy filesystem/image scan
+- SBOM generation
+- Checkov Terraform/IaC scan
+- Terraform validate/plan/apply path
+- Helm lint/template validation
+- KEDA and AKS hardening checks
+- deploy-dev and deploy-prod workflow paths
+- rollback workflow
+- evidence pack generation
 
 Production CI/CD principle:
 
 ```text
-Validation pipelines run automatically.
-Production deployment pipelines are manual and approval-gated.
-Rollback is manual.
-```
-
----
-
-## Expected CI/CD Trigger Behavior
-
-Not every workflow runs on every push. This is intentional.
-
-The repository uses path-based triggers so GitHub Actions only runs the workflows relevant to the files that changed. This keeps CI faster, cheaper, and closer to real production practice.
-
-| Workflow | Runs Automatically When | Manual Run |
-|---|---|---|
-| CI | Push or PR to `main` / `dev` | Yes |
-| Security Scan | Push or PR to `main` / `dev` | Yes |
-| Evidence Pack | Docs, infra, workflow, script, or observability files change | Yes |
-| Terraform Validate | Terraform files change under `infra/terraform/**` | Yes |
-| Terraform Plan | Pull request with Terraform changes, or manual trigger | Yes |
-| Terraform Apply | Never automatically | Yes, with approval and Azure variables |
-| Helm Validate | Helm files change under `infra/helm/**` | Yes |
-| KEDA and AKS Hardening | Helm, Kubernetes, or KEDA-related files change | Yes |
-| Image Scan and SBOM | Application code, Dockerfiles, or Docker Compose changes | Yes |
-| Deploy Dev | Never automatically in this local/interview setup | Yes |
-| Deploy Prod | Never automatically | Yes, with production approval |
-| Rollback Prod | Never automatically | Yes |
-
-### Why only some pipelines run after a push
-
-Example:
-
-- If only `README.md` or screenshots change, Terraform and Helm validation do not need to run.
-- If Terraform files change, Terraform Validate and Terraform Plan run.
-- If Helm chart files change, Helm Validate and KEDA/AKS Hardening run.
-- If application code changes, CI and Image Scan/SBOM run.
-- Production deployment and rollback are manual by design.
-
-This follows the production rule:
-
-```text
-Validation = automatic when relevant
-Deployment = controlled/manual
-Production = approval-gated
-Rollback = manual emergency action
+Validation is automatic.
+Production deployment is manual and approval-gated.
+Rollback is manual and controlled.
 ```
 
 ---
@@ -504,295 +467,351 @@ Rollback = manual emergency action
 
 Local observability:
 
-- Prometheus runs locally on port `9090`
-- Grafana runs locally on port `3001`
-- Backend API exposes `/metrics`
-- Ingestion API exposes `/metrics`
-- Workers expose Prometheus metrics ports
-- Grafana dashboard is provisioned automatically
-- structured JSON logs are emitted by services/workers
-- evidence files capture validation output
+- Prometheus scrapes service metrics
+- Alertmanager routes alerts
+- Grafana shows dashboards
+- services expose health and metrics endpoints
+- AI Ops consumes alerts and metrics evidence
+
+Important local ports:
+
+```text
+Prometheus:    http://localhost:9090
+Alertmanager:  http://localhost:9093
+Grafana:       http://localhost:3001
+```
 
 Production observability design:
 
-- Azure Monitor for Azure resources
-- Log Analytics for centralized logs
-- Application Insights for app performance/tracing design
-- Managed Prometheus for metrics
-- Managed Grafana for dashboards
-- OpenTelemetry design path
+- Azure Monitor
+- Log Analytics
+- Application Insights
+- Managed Prometheus
+- Managed Grafana
+- OpenTelemetry path
 - Prometheus alert rules
-- KQL examples for log analysis
-- audit logs for business/security actions
+- KQL examples
 
-Important metrics:
+Observability files:
 
-- API request count
-- API latency
-- API error rate
-- ingestion request count
-- device logs ingested
-- jobs queued
-- worker messages processed
-- audit events recorded
-- Prometheus target health
+```text
+observability/
+├── alertmanager/
+│   └── alertmanager.yml
+├── grafana/
+│   ├── dashboards/
+│   │   └── venueops-overview.json
+│   └── provisioning/
+│       ├── dashboards/
+│       └── datasources/
+├── log-analytics/
+│   └── kql/
+│       ├── api-errors.kql
+│       ├── audit-events.kql
+│       └── worker-processing.kql
+├── otel/
+│   └── README.md
+└── prometheus/
+    ├── prometheus.yml
+    └── rules/
+        └── venueops-alerts.yaml
+```
 
 ---
 
-## Database and Data Flow
+## Security, Scalability, and Reliability
 
-Local mode:
+Security controls:
 
-```text
-DATABASE_MODE=sqlite
-DATABASE_URL=sqlite:////data/db/venueops.db
-```
-
-Production mode:
-
-```text
-DATABASE_MODE=postgres
-DATABASE_URL=<from Azure Key Vault / production secret injection>
-```
-
-Database-backed entities:
-
-- venues
-- devices
-- jobs
+- Cloudflare DNS, WAF, DDoS protection, rate limiting, bot protection, CDN, TLS
+- Azure Application Gateway WAF
+- private AKS subnet
+- private endpoints for managed services
+- Key Vault for secrets
+- Managed Identity / Workload Identity
+- RBAC and least privilege
+- Kubernetes NetworkPolicy
+- Pod Security hardening
+- CI security scanning
+- image scanning and SBOM
 - audit logs
+- production approval gates
 
-Data flow examples:
+Scalability controls:
 
-Device log flow:
-
-```text
-In-venue device
-  -> Cloudflare
-  -> Application Gateway WAF
-  -> Device Ingestion API
-  -> Event Hubs
-  -> Log Processor Worker
-  -> Blob Storage / PostgreSQL / logs
-```
-
-Notification flow:
-
-```text
-Backend API
-  -> Service Bus
-  -> Notification Worker
-  -> SMS / Email provider
-  -> audit/job status
-```
-
-Video flow:
-
-```text
-Backend API
-  -> Service Bus
-  -> Video Processor Worker
-  -> Blob Storage
-  -> Cloudflare CDN
-  -> Guest
-```
-
-Configuration/admin flow:
-
-```text
-Admin User
-  -> Web Admin Dashboard
-  -> Backend API
-  -> PostgreSQL / Redis / Audit Logs
-```
-
----
-
-## Scalability
-
-API scaling:
-
-- Web, backend API, and ingestion API scale horizontally using HPA.
-- HPA can scale based on CPU/memory and future custom metrics.
-
-Worker scaling:
-
-- Workers scale using KEDA.
-- KEDA scales workers based on Event Hub backlog or Service Bus queue length.
-
-Node scaling:
-
-- AKS Cluster Autoscaler adds or removes nodes based on pending pods and capacity requirements.
-
-Storage scaling:
-
-- Blob Storage handles large files, raw logs, landing videos, and processed videos.
-
-Database scaling:
-
-- PostgreSQL can scale by SKU, storage, indexing, connection pooling, and read replicas if needed.
-
-Event scaling:
-
-- Event Hubs partitions support high-volume device event ingestion.
-- Service Bus queues isolate different business job types.
-
----
-
-## Reliability and Resiliency
+- HPA for web/API/ingestion workloads
+- KEDA for queue/event-driven workers
+- AKS Cluster Autoscaler
+- Event Hubs partitions for high-volume ingestion
+- Service Bus queues for async jobs
+- Blob Storage for large logs/videos/assets
+- Redis for hot cache/device state
 
 Reliability controls:
 
-- multiple replicas
-- readiness probes
-- liveness probes
+- async queue-first processing
+- retries and dead-letter design
+- readiness and liveness probes
 - PodDisruptionBudgets
-- queue-based asynchronous processing
-- retry/dead-letter design for Service Bus
-- Event Hubs consumer design
-- deployment rollout checks
-- post-deploy smoke test script
+- rollout checks
 - rollback workflow
+- post-deploy smoke tests
+- AI Ops verification after remediation
 - evidence generation
-
-Resiliency principles:
-
-- devices may be offline
-- providers may fail
-- workers may crash
-- nodes may be replaced
-- video jobs may take time
-- messages should be retried or dead-lettered
-- APIs should not block on slow downstream providers
-
----
-
-## Security Controls
-
-Security controls included or designed:
-
-- Cloudflare DNS/WAF/DDoS/rate limiting/bot protection/CDN/TLS
-- Azure Application Gateway WAF
-- Azure Key Vault
-- Managed Identity / Workload Identity
-- private endpoints
-- network segmentation
-- Kubernetes NetworkPolicy
-- Pod Security restricted namespace
-- RBAC and least privilege
-- no long-lived Azure credentials in code
-- GitHub OIDC design for Azure login
-- Gitleaks secret scanning
-- Trivy filesystem scanning
-- Trivy image scanning
-- SBOM generation
-- Checkov Terraform/IaC scanning
-- environment approval for production
-- branch protection guidance
-- audit logs
-
----
-
-## Evidence and Validation
-
-Evidence files live under:
-
-```text
-docs/evidence/
-```
-
-Evidence includes:
-
-- local smoke test output
-- backend API health
-- ingestion API health
-- worker evidence
-- Terraform validation
-- Helm lint output
-- GitHub Actions workflow inventory
-- Prometheus targets
-- final validation
-- final project tree
-- final docs inventory
-- final Terraform/Helm files inventory
-
-Run full validation:
-
-```bash
-bash scripts/final-validate.sh
-```
-
-Expected result:
-
-```text
-FINAL VALIDATION PASSED
-```
-
-Build evidence pack:
-
-```bash
-bash scripts/build-evidence-pack.sh
-```
-
----
-
-## Production Readiness Additions
-
-This repo includes production-readiness workflows and docs:
-
-- Image scan and SBOM workflow
-- Terraform plan workflow
-- Terraform apply workflow with environment approval
-- Production rollback workflow
-- Evidence pack workflow
-- Branch protection guidance
-- Production approval guidance
-- Post-deploy smoke test script
-- Gitleaks config for safe documentation placeholders
-- CI volume isolation for stable Docker Compose runs in GitHub Actions
-
-Review:
-
-- `docs/branch-protection.md`
-- `docs/production-approval.md`
-- `docs/submission-checklist.md`
-- `docs/final-interview-script.md`
 
 ---
 
 ## Repository Structure
 
-High-level structure:
+Current repository structure, including source files:
 
 ```text
 .
-├── apps/
-│   ├── web/
-│   ├── api/
-│   ├── ingestion-api/
-│   └── workers/
-├── infra/
-│   ├── terraform/
-│   ├── helm/
-│   ├── kubernetes/
-│   ├── policies/
-│   └── security/
-├── observability/
-│   ├── prometheus/
-│   ├── grafana/
-│   ├── log-analytics/
-│   └── otel/
-├── docs/
-│   ├── diagrams/
-│   ├── screenshots/
-│   ├── evidence/
-│   └── *.md
-├── scripts/
-├── tests/
-├── .github/workflows/
-├── docker-compose.yml
 ├── Makefile
-└── README.md
+├── README.md
+├── aiops
+│   ├── Dockerfile
+│   ├── README.md
+│   ├── requirements.txt
+│   ├── runbooks
+│   │   ├── investigate_device_connectivity.yaml
+│   │   ├── investigate_provider_failure.yaml
+│   │   ├── restart_api.yaml
+│   │   ├── rollback_release.yaml
+│   │   └── scale_ingestion_api.yaml
+│   ├── src
+│   │   ├── audit_store.py
+│   │   ├── config.py
+│   │   ├── evidence_collector.py
+│   │   ├── incident_analyzer.py
+│   │   ├── main.py
+│   │   ├── ollama_client.py
+│   │   ├── prometheus_client.py
+│   │   ├── runbook_registry.py
+│   │   └── verifier.py
+│   └── tests
+├── apps
+│   ├── api
+│   │   ├── Dockerfile
+│   │   ├── requirements.txt
+│   │   ├── src
+│   │   │   ├── db.py
+│   │   │   ├── main.py
+│   │   │   ├── messaging.py
+│   │   │   ├── ops_state.py
+│   │   │   └── telemetry.py
+│   │   └── tests
+│   ├── ingestion-api
+│   │   ├── Dockerfile
+│   │   ├── requirements.txt
+│   │   ├── src
+│   │   │   ├── eventhub_client.py
+│   │   │   ├── main.py
+│   │   │   └── telemetry.py
+│   │   └── tests
+│   ├── web
+│   │   ├── Dockerfile
+│   │   ├── nginx.conf
+│   │   ├── public
+│   │   │   ├── health.html
+│   │   │   └── index.html
+│   │   ├── src
+│   │   └── tests
+│   └── workers
+│       ├── log-processor
+│       │   ├── Dockerfile
+│       │   ├── requirements.txt
+│       │   ├── src
+│       │   └── tests
+│       ├── notification-worker
+│       │   ├── Dockerfile
+│       │   ├── requirements.txt
+│       │   ├── src
+│       │   └── tests
+│       └── video-processor
+│           ├── Dockerfile
+│           ├── requirements.txt
+│           ├── src
+│           └── tests
+├── config
+│   ├── dev
+│   ├── prod
+│   └── staging
+├── dist
+│   └── venueops-evidence-pack-20260512T154037Z.zip
+├── docker-compose.yml
+├── docs
+│   ├── aks-hardening.md
+│   ├── architecture.md
+│   ├── automation.md
+│   ├── branch-protection.md
+│   ├── cloudflare-app-gateway.md
+│   ├── database.md
+│   ├── decisions
+│   ├── diagrams
+│   │   ├── architecture.mmd
+│   │   ├── local-demo.mmd
+│   │   ├── venueops_cloud.png
+│   │   ├── venueops_local.png
+│   │   └── venueops_production.png
+│   ├── evidence
+│   │   ├── README.md
+│   │   ├── backend-api-health.txt
+│   │   ├── batch-10-cloudflare-appgateway.txt
+│   │   ├── batch-11-keda-aks-hardening.txt
+│   │   ├── batch-7-azure-wiring.txt
+│   │   ├── batch-8-database-wiring.txt
+│   │   ├── batch-9-1-local-grafana-prometheus.txt
+│   │   ├── docker-compose-status.txt
+│   │   ├── docs-inventory.txt
+│   │   ├── final-docker-compose-status.txt
+│   │   ├── final-docs-files.txt
+│   │   ├── final-github-actions.txt
+│   │   ├── final-helm-files.txt
+│   │   ├── final-project-tree.txt
+│   │   ├── final-prometheus-targets.txt
+│   │   ├── final-terraform-files.txt
+│   │   ├── final-validation.txt
+│   │   ├── github-actions-workflows.txt
+│   │   ├── helm-lint.txt
+│   │   ├── ingestion-api-health.txt
+│   │   ├── local-smoke-test.txt
+│   │   ├── log-processor-evidence.txt
+│   │   ├── notification-worker-evidence.txt
+│   │   ├── terraform-validate.txt
+│   │   └── video-worker-evidence.txt
+│   ├── final-interview-script.md
+│   ├── interview-walkthrough.md
+│   ├── observability.md
+│   ├── production-approval.md
+│   ├── reliability.md
+│   ├── resiliency.md
+│   ├── runbooks
+│   ├── scalability.md
+│   ├── screenshots
+│   │   ├── final_validation.png
+│   │   ├── github_pipelines.png
+│   │   ├── grafanna.png
+│   │   └── localhost_ui.png
+│   ├── security.md
+│   ├── submission-checklist.md
+│   └── tradeoffs.md
+├── infra
+│   ├── helm
+│   │   ├── otel-collector
+│   │   └── venueops
+│   │       ├── Chart.yaml
+│   │       ├── templates
+│   │       ├── values-dev.yaml
+│   │       ├── values-prod.yaml
+│   │       └── values.yaml
+│   ├── kubernetes
+│   │   ├── base
+│   │   │   ├── api
+│   │   │   ├── hpa
+│   │   │   ├── ingestion-api
+│   │   │   ├── ingress
+│   │   │   ├── keda
+│   │   │   ├── namespace
+│   │   │   ├── network-policies
+│   │   │   ├── observability
+│   │   │   ├── pdb
+│   │   │   ├── secrets
+│   │   │   ├── web
+│   │   │   └── workers
+│   │   └── overlays
+│   │       ├── dev
+│   │       ├── prod
+│   │       └── staging
+│   ├── policies
+│   │   ├── kyverno
+│   │   └── opa
+│   ├── security
+│   │   ├── checkov
+│   │   ├── gitleaks
+│   │   ├── semgrep
+│   │   └── trivy
+│   └── terraform
+│       ├── envs
+│       │   ├── dev
+│       │   ├── prod
+│       │   └── staging
+│       ├── main.tf
+│       ├── modules
+│       │   ├── acr
+│       │   ├── aks
+│       │   ├── application-gateway
+│       │   ├── cloudflare
+│       │   ├── event-hubs
+│       │   ├── key-vault
+│       │   ├── monitoring
+│       │   ├── network
+│       │   ├── postgresql
+│       │   ├── redis
+│       │   ├── resource-group
+│       │   ├── service-bus
+│       │   └── storage
+│       ├── outputs.tf
+│       ├── providers.tf
+│       ├── variables.tf
+│       └── versions.tf
+├── local
+│   ├── mock-eventhub
+│   ├── mock-servicebus
+│   ├── postgres-init
+│   └── sample-data
+│       ├── devices
+│       ├── logs
+│       └── videos
+├── observability
+│   ├── alertmanager
+│   │   └── alertmanager.yml
+│   ├── grafana
+│   │   ├── dashboards
+│   │   │   └── venueops-overview.json
+│   │   └── provisioning
+│   │       ├── dashboards
+│   │       └── datasources
+│   ├── log-analytics
+│   │   └── kql
+│   │       ├── api-errors.kql
+│   │       ├── audit-events.kql
+│   │       └── worker-processing.kql
+│   ├── otel
+│   │   └── README.md
+│   └── prometheus
+│       ├── prometheus.yml
+│       └── rules
+│           └── venueops-alerts.yaml
+├── packages
+│   ├── contracts
+│   └── shared
+│       └── src
+├── scripts
+│   ├── build-evidence-pack.sh
+│   ├── final-evidence.sh
+│   ├── final-validate.sh
+│   ├── generate-evidence.sh
+│   ├── install-keda.sh
+│   ├── local-down.sh
+│   ├── local-up.sh
+│   ├── post-deploy-smoke.sh
+│   └── smoke-test.sh
+├── tests
+│   ├── integration
+│   ├── load
+│   ├── security
+│   └── smoke
+├── tools
+└── uploads
+    └── aiops-alertmanager-runbook-flow-review.zip
+```
+
+The repo currently contains:
+
+```text
+118 directories
+120 files
 ```
 
 ---
@@ -811,7 +830,7 @@ Stop local platform:
 make down
 ```
 
-Run smoke test:
+Run smoke tests:
 
 ```bash
 make smoke
@@ -853,49 +872,48 @@ Render Helm:
 helm template venueops infra/helm/venueops --values infra/helm/venueops/values-dev.yaml
 ```
 
-Run local Gitleaks scan:
-
-```bash
-gitleaks detect --source . --no-git --config .gitleaks.toml --redact --verbose
-```
-
 ---
 
 ## Honest Limitations
 
-This project is production-shaped and strongly validated locally, but it is not a live Azure deployment.
+This is an interview demo, not a live production deployment.
 
-Not completed in this local interview repo:
+Current limitations:
 
-- live Azure deployment has not been run
-- real Cloudflare DNS/WAF/rate-limit rules are not enabled
-- real Azure Key Vault secret mounting requires live AKS + CSI driver + identity
-- real KEDA scaling requires live AKS + KEDA + Azure queues/event hubs
-- real SMS/email provider integration is mocked locally
-- real video transcoding is mocked locally
-- production branch protection must be enabled in GitHub repository settings
-- production environment approval must be configured in GitHub repository settings
-- Terraform apply requires real Azure OIDC and remote backend configuration
+- Azure deployment has not been run end-to-end
+- real Cloudflare rules are represented as design/IaC, not active production DNS/WAF config
+- SMS/email providers are mocked locally
+- video processing is mocked locally
+- local queues simulate Event Hubs and Service Bus behavior
+- local SQLite is used instead of live Azure PostgreSQL
+- local Prometheus/Grafana can be replaced or extended by Azure Managed Prometheus/Grafana
+- AI Ops remediation is safe and simulated locally
+- production branch protection and environment approvals must be configured in GitHub settings
 
-This is intentional. The repo proves architecture, service boundaries, CI/CD, IaC, deployment packaging, observability, and validation without requiring paid cloud resources.
+This is intentional for the interview. The repo proves the architecture, automation, validation, observability, and operational workflow without requiring paid cloud resources.
 
 ---
 
-## Interview Summary
+## Interview Talk Track
 
-I built a production-shaped Azure DevOps platform repo for VenueOps.
+Use this summary:
 
-The local stack proves the service flow using Docker Compose, mock queues, SQLite, Prometheus, and Grafana.
+```text
+I built VenueOps as a production-shaped Azure platform protected by Cloudflare at the edge. 
+The local demo runs 11 containers: web, api, ingestion-api, three workers, Prometheus, Alertmanager, Grafana, AI Ops, and Ollama.
 
-Terraform validates the Azure infrastructure design.
+In production, these map to private AKS workloads inside an Azure VNet. Cloudflare handles edge security, Azure Application Gateway WAF handles Azure ingress, and private endpoints connect AKS to Azure services like Blob Storage, Event Hubs, Service Bus, PostgreSQL, Redis, Key Vault, ACR, and monitoring.
 
-Helm validates the AKS deployment package.
+The platform separates synchronous API traffic from asynchronous workers. Event Hubs handles high-volume device/log ingestion. Service Bus handles reliable jobs and commands. Blob Storage handles videos and static assets. PostgreSQL stores operational state. Redis supports hot configuration and device state.
 
-GitHub Actions validates CI, security, image scanning, SBOM, Terraform, Helm, KEDA/AKS hardening, deployment rendering, rollback path, and evidence packaging.
+CI/CD is handled through GitHub Actions with validation, security scanning, image scanning, SBOM generation, Terraform validation, Helm validation, deployment workflows, rollback, and evidence packaging.
 
-The architecture uses Cloudflare at the edge, Azure Application Gateway WAF, private AKS, private data subnet, private endpoints, Azure Event Hubs, Azure Service Bus, Blob Storage, PostgreSQL, Key Vault, ACR, Azure Monitor, Log Analytics, Application Insights, Managed Prometheus, and Managed Grafana.
+The AI Ops layer is agentic because it follows an observe-analyze-plan-act-verify-audit loop. Prometheus detects incidents, Alertmanager routes alerts, AI Ops collects evidence, calls a local Ollama LLM for diagnosis, selects an approved runbook, waits for human approval, executes safe remediation, verifies recovery, and records an audit trail.
+```
 
-The project demonstrates cloud/platform engineering thinking across security, scalability, reliability, resiliency, observability, automation, and audit evidence.
+---
 
+## Thanks for viewing
 
-## Thanks for viewing--Ashish Dev ashroy6@gmail.com
+Ashish Dev  
+ashroy6@gmail.com
