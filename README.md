@@ -1,4 +1,4 @@
-# VenueOps AI Cloud Platform — Interview Demo README
+# VenueOps Agentic AI Cloud Platform — Interview Demo README
 
 Production-shaped DevOps interview project for a venue operations platform on **Azure + Cloudflare**, with **AKS**, **Terraform**, **Helm**, **GitHub Actions**, **Prometheus/Grafana**, and an **Agentic AI Ops incident response layer**.
 
@@ -699,7 +699,7 @@ helm template venueops infra/helm/venueops --values infra/helm/venueops/values-d
 
 ## Honest Limitations
 
-This is an interview demo, not a live production deployment.
+This is a demo, not a live production deployment.
 
 Current limitations:
 
@@ -714,25 +714,6 @@ Current limitations:
 - production branch protection and environment approvals must be configured in GitHub settings
 
 This is intentional for the interview. The repo proves the architecture, automation, validation, observability, and operational workflow without requiring paid cloud resources.
-
----
-
-## Interview Talk Track
-
-Use this summary:
-
-```text
-I built VenueOps as a production-shaped Azure platform protected by Cloudflare at the edge. 
-The local demo runs 11 containers: web, api, ingestion-api, three workers, Prometheus, Alertmanager, Grafana, AI Ops, and Ollama.
-
-In production, these map to private AKS workloads inside an Azure VNet. Cloudflare handles edge security, Azure Application Gateway WAF handles Azure ingress, and private endpoints connect AKS to Azure services like Blob Storage, Event Hubs, Service Bus, PostgreSQL, Redis, Key Vault, ACR, and monitoring.
-
-The platform separates synchronous API traffic from asynchronous workers. Event Hubs handles high-volume device/log ingestion. Service Bus handles reliable jobs and commands. Blob Storage handles videos and static assets. PostgreSQL stores operational state. Redis supports hot configuration and device state.
-
-CI/CD is handled through GitHub Actions with validation, security scanning, image scanning, SBOM generation, Terraform validation, Helm validation, deployment workflows, rollback, and evidence packaging.
-
-The AI Ops layer is agentic because it follows an observe-analyze-plan-act-verify-audit loop. Prometheus detects incidents, Alertmanager routes alerts, AI Ops collects evidence, calls a local Ollama LLM for diagnosis, selects an approved runbook, waits for human approval, executes safe remediation, verifies recovery, and records an audit trail.
-```
 
 ---
 
