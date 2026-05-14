@@ -1,0 +1,22 @@
+id: scale_ingestion_api
+name: Scale Ingestion API
+risk: low
+approval_required: false
+description: Increase ingestion capacity when device log latency or backlog grows.
+steps:
+  - Check ingestion API latency.
+  - Check device log queue backlog.
+  - Scale ingestion API and log processor replicas.
+  - Verify backlog is draining.
+verification_steps:
+  - Ingestion API p95 latency decreases.
+  - Device log backlog decreases.
+  - Log processor throughput increases.
+
+
+# In production, this would map to:
+
+# HPA scaling.
+# KEDA event-driven scaling.
+# AKS deployment replica increase.
+# Service Bus queue-depth based scaling.

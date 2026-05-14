@@ -7,6 +7,7 @@ services:
     depends_on:
       - api
       - ingestion-api
+      - aiops
     restart: unless-stopped
 
   api:
@@ -98,6 +99,49 @@ services:
       - api
     restart: unless-stopped
 
+  aiops:
+    build:
+      context: ./aiops
+    ports:
+      - "8010:8010"
+    environment:
+      APP_ENV: local
+      LOG_LEVEL: INFO
+      API_BASE_URL: http://api:8000
+      INGESTION_BASE_URL: http://ingestion-api:8001
+      PROMETHEUS_BASE_URL: http://prometheus:9090
+      OLLAMA_BASE_URL: http://ollama:11434
+      OLLAMA_MODEL: llama3.2:1b
+      DATA_DIR: /data
+      AIOPS_AUDIT_LOG_PATH: /data/audit/aiops_audit.jsonl
+      RUNBOOK_DIR: /app/runbooks
+    volumes:
+      - venueops_data:/data
+    depends_on:
+      - api
+      - ingestion-api
+      - ollama
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+
+  alertmanager:
+    image: prom/alertmanager:v0.27.0
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./observability/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    command:
+      - "--config.file=/etc/alertmanager/alertmanager.yml"
+      - "--storage.path=/alertmanager"
+    depends_on:
+      - aiops
+    restart: unless-stopped
+
   prometheus:
     image: prom/prometheus:v3.0.1
     ports:
@@ -112,6 +156,8 @@ services:
       - log-processor
       - video-processor
       - notification-worker
+      - aiops
+      - alertmanager
     restart: unless-stopped
 
   grafana:
@@ -130,8 +176,8 @@ services:
       - prometheus
     restart: unless-stopped
 
-
 volumes:
   venueops_data:
   prometheus_data:
   grafana_data:
+  ollama_data:

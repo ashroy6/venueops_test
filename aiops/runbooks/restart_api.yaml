@@ -1,0 +1,19 @@
+id: restart_api
+name: Restart Backend API
+risk: low
+approval_required: true
+description: Restart the backend API deployment when health checks fail and no database or queue issue is detected.
+steps:
+  - Confirm API health endpoint is failing.
+  - Check recent deployment history.
+  - Restart backend API deployment.
+  - Verify health endpoint and error rate.
+verification_steps:
+  - Backend API health returns ok.
+  - API 5xx rate decreases.
+  - Grafana request/error panels recover.
+
+
+# In production, this would be:
+
+# kubectl rollout restart deployment/api

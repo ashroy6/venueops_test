@@ -1,29 +1,57 @@
 groups:
   - name: venueops-api
     rules:
-      - alert: VenueOpsApiHighErrorRate
-        expr: sum(rate(venueops_api_http_requests_total{status=~"5.."}[5m])) > 1
-        for: 5m
+      - alert: QueueBacklogHigh
+        expr: venueops_api_queue_backlog >= 10
+        for: 0s
         labels:
           severity: warning
+          service: backend-api
+          incident_kind: queue_backlog
+        annotations:
+          summary: Queue backlog threshold breached
+          description: Local mock async queue backlog reached 10 or more pending jobs.
+
+      - alert: DeviceOffline
+        expr: venueops_devices_offline > 0
+        for: 0s
+        labels:
+          severity: warning
+          service: devices
+          incident_kind: device_offline
+        annotations:
+          summary: Venue device is offline
+          description: One or more venue devices stopped sending heartbeat events.
+
+      - alert: Api5xxFaultActive
+        expr: venueops_api_fault_active == 1
+        for: 0s
+        labels:
+          severity: critical
+          service: backend-api
+          incident_kind: api_5xx_spike
+        annotations:
+          summary: Simulated bad API release is active
+          description: The controlled API 5xx fault flag is active and should trigger rollback remediation.
+
+      - alert: VenueOpsApiHighErrorRate
+        expr: sum(rate(venueops_api_http_requests_total{status=~"5.."}[1m])) > 1
+        for: 30s
+        labels:
+          severity: warning
+          service: backend-api
+          incident_kind: api_5xx_spike
         annotations:
           summary: VenueOps API has elevated 5xx errors
           description: Backend API is returning server errors.
 
       - alert: VenueOpsIngestionHighErrorRate
-        expr: sum(rate(venueops_ingestion_http_requests_total{status=~"5.."}[5m])) > 1
-        for: 5m
+        expr: sum(rate(venueops_ingestion_http_requests_total{status=~"5.."}[1m])) > 1
+        for: 30s
         labels:
           severity: warning
+          service: ingestion-api
+          incident_kind: ingestion_slowdown
         annotations:
           summary: VenueOps ingestion API has elevated 5xx errors
           description: Device ingestion API is returning server errors.
-
-      - alert: VenueOpsWorkerNoProcessing
-        expr: sum(rate(venueops_worker_messages_processed_total[10m])) == 0
-        for: 15m
-        labels:
-          severity: warning
-        annotations:
-          summary: VenueOps workers are not processing messages
-          description: No worker processing activity has been observed.

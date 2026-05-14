@@ -1,0 +1,26 @@
+id: investigate_device_connectivity
+name: Investigate Device Connectivity
+risk: medium
+approval_required: "true"
+description: Investigate and recover an in-venue camera, kiosk, or IoT device that stopped sending heartbeats.
+steps:
+  - Check the offline device ID and last heartbeat time.
+  - Check device network connectivity.
+  - Check venue network path and gateway status.
+  - Restart or reconnect the affected device if safe.
+  - Confirm device heartbeat has resumed.
+verification_steps:
+  - Offline device count returns to zero.
+  - Device health endpoint reports healthy.
+  - Prometheus device offline metric returns to zero.
+file: investigate_device_connectivity.yaml
+
+
+
+# In the real world, this would map to:
+
+# Check IoT/device heartbeat.
+# Check network path.
+# Check edge gateway.
+# Restart device connection agent.
+# Notify field support if still offline.

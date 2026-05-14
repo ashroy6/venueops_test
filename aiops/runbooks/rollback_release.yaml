@@ -1,0 +1,25 @@
+id: rollback_release
+name: Roll Back Release
+risk: high
+approval_required: true
+description: Roll back the latest deployment when errors correlate with a new release.
+steps:
+  - Confirm 5xx increase started after deployment.
+  - Identify previous healthy image tag.
+  - Request production approval.
+  - Trigger rollback workflow.
+  - Verify service recovery.
+verification_steps:
+  - API 5xx rate returns to baseline.
+  - Health checks pass.
+  - Latest deployment SHA is recorded in audit log.
+
+
+
+# In production, this would map to:
+
+# Kubernetes rollout undo.
+# GitHub Actions rollback workflow.
+# Argo CD rollback.
+# Helm rollback.
+# Deployment slot swap.

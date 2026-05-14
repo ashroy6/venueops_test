@@ -104,6 +104,7 @@ jobs:
           wait_for_url "web dashboard" "http://127.0.0.1:3000/health.html" 90
           wait_for_url "backend API" "http://127.0.0.1:8000/health" 90
           wait_for_url "ingestion API" "http://127.0.0.1:8001/health" 90
+          wait_for_url "AI Ops service" "http://127.0.0.1:8010/health" 90
           wait_for_url "Prometheus" "http://127.0.0.1:9090/-/ready" 90
 
           echo "Final service status:"
@@ -146,6 +147,9 @@ jobs:
 
           wait_for_metric "Prometheus target query" \
             "curl -fsS 'http://127.0.0.1:9090/api/v1/query?query=up' | grep venueops-api" 60
+
+          wait_for_metric "AI Ops metrics" \
+            "curl -fsS http://127.0.0.1:8010/metrics | grep venueops_aiops" 60
 
       - name: Generate evidence
         if: always()

@@ -13,13 +13,11 @@
       --muted: #9ca3af;
       --accent: #38bdf8;
       --border: #374151;
-      --good: #22c55e;
       --warn: #f59e0b;
+      --good: #22c55e;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -34,15 +32,8 @@
       border-bottom: 1px solid var(--border);
     }
 
-    h1 {
-      margin: 0 0 6px;
-      font-size: 24px;
-    }
-
-    p {
-      margin: 0;
-      color: var(--muted);
-    }
+    h1 { margin: 0 0 6px; font-size: 24px; }
+    p { margin: 0; color: var(--muted); }
 
     main {
       padding: 24px;
@@ -52,7 +43,7 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
       gap: 16px;
     }
 
@@ -63,20 +54,9 @@
       padding: 18px;
     }
 
-    .card h2 {
-      font-size: 16px;
-      margin: 0 0 10px;
-    }
-
-    .metric {
-      font-size: 30px;
-      font-weight: bold;
-    }
-
-    .muted {
-      color: var(--muted);
-      font-size: 14px;
-    }
+    .card h2 { font-size: 16px; margin: 0 0 10px; }
+    .metric { font-size: 30px; font-weight: bold; }
+    .muted { color: var(--muted); font-size: 14px; }
 
     button {
       background: var(--accent);
@@ -89,6 +69,17 @@
       cursor: pointer;
     }
 
+    button.secondary {
+      background: var(--panel2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    button.warn {
+      background: var(--warn);
+      color: #111827;
+    }
+
     pre {
       background: #020617;
       border: 1px solid var(--border);
@@ -97,6 +88,7 @@
       overflow: auto;
       min-height: 120px;
       white-space: pre-wrap;
+      line-height: 1.45;
     }
 
     .pill {
@@ -108,12 +100,31 @@
       margin-top: 8px;
       font-size: 12px;
     }
+
+    .aiops-panel { border-color: #0ea5e9; }
+
+    .summary {
+      background: #07111f;
+      border: 1px solid #0ea5e9;
+      color: #e5e7eb;
+      font-size: 14px;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr 1.1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 1100px) {
+      .three-col { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>VenueOps Admin Dashboard</h1>
-    <p>Central configuration and operations view for venues, devices, logs, videos, and notifications.</p>
+    <p>Operations view for workloads, queue backlog, AI Ops incident analysis, remediation runbooks, verification, and audit.</p>
   </header>
 
   <main>
@@ -141,57 +152,329 @@
         <div class="metric" id="ingestionHealth">-</div>
         <div class="muted">Device log API health</div>
       </div>
+
+      <div class="card">
+        <h2>AI Ops</h2>
+        <div class="metric" id="aiopsHealth">-</div>
+        <div class="muted">Incident analysis service</div>
+      </div>
+
+      <div class="card">
+        <h2>Total Jobs Queued</h2>
+        <div class="metric" id="totalJobsQueued">-</div>
+        <div class="muted">Historical jobs submitted</div>
+      </div>
+
+      <div class="card">
+        <h2>Current Jobs in Queue</h2>
+        <div class="metric" id="queueBacklog">-</div>
+        <div class="muted" id="queueBacklogMeta">Live pending jobs / backlog</div>
+      </div>
     </section>
 
     <section class="card">
-      <h2>Demo actions</h2>
+      <h2>Operational Test Actions</h2>
       <button onclick="sendDeviceLog()">Send Device Log</button>
       <button onclick="sendSmsJob()">Queue SMS Job</button>
       <button onclick="sendEmailJob()">Queue Email Job</button>
       <button onclick="sendVideoJob()">Queue Video Job</button>
-      <button onclick="loadAudit()">Load Audit Logs</button>
-      <div class="pill">Local mode uses mock files instead of Azure Event Hubs and Service Bus.</div>
+      <button class="warn" onclick="generateQueueLoad()">Generate Queue Load x10</button>
+      <button class="warn" onclick="deployBadApiRelease()">Deploy Bad API Release</button>
+      <button class="warn" onclick="markCameraOffline()">Mark Camera Offline</button>
+      <button class="warn" onclick="generateApi5xxTraffic()">Generate API 5xx Traffic</button>
+      <button class="secondary" onclick="loadAudit()">Load Audit Logs</button>
+      <button class="secondary" onclick="loadStatus()">Refresh Status</button>
+      <div class="pill">Production-like flow: orange buttons create controlled incidents; Prometheus alerts, Alertmanager triggers AI Ops, and remediation only happens through approved runbooks.</div>
     </section>
 
-    <section class="card">
-      <h2>Output</h2>
-      <pre id="output">Loading status...</pre>
+    <section class="card aiops-panel">
+      <h2>AI Ops Incident & Runbook Workflow</h2>
+      <button onclick="refreshLatestIncident()">Refresh Latest AI Ops Incident</button>
+      <button onclick="showRemediationRunbook()">Show Remediation Runbook</button>
+      <button class="warn" onclick="approveAndRunRemediation()">Approve & Run Remediation</button>
+      <button class="secondary" onclick="loadAiOpsAudit()">Load AI Ops Audit</button>
+      <button class="secondary" onclick="closeLatestIncident()">Close Incident</button>
+      <div class="pill">The system shows the incident first. Runbook steps are shown before approval. Approval performs safe local remediation and verification.</div>
+    </section>
+
+    <section class="three-col">
+      <div class="card">
+        <h2>Output</h2>
+        <pre id="output">Loading status...</pre>
+      </div>
+
+      <div class="card aiops-panel">
+        <h2>AI Ops Human Summary</h2>
+        <pre id="aiopsHuman" class="summary">Generate queue load, wait for Alertmanager, then refresh latest incident. Total Jobs Queued should increase; Current Jobs in Queue should rise and later drop after remediation.</pre>
+      </div>
+
+      <div class="card aiops-panel">
+        <h2>AI Ops Raw JSON</h2>
+        <pre id="aiopsOutput">AI Ops ready.</pre>
+      </div>
     </section>
   </main>
 
   <script>
     const API_BASE = "http://localhost:8000";
     const INGESTION_BASE = "http://localhost:8001";
+    const AIOPS_BASE = "http://localhost:8010";
+
+    let latestIncident = null;
+    let lastRecommendedRunbook = null;
+    let lastRunbookDetails = null;
+    let latestIncidentStatusKey = "";
+    let incidentPollTimer = null;
 
     function show(obj) {
       document.getElementById("output").textContent = JSON.stringify(obj, null, 2);
     }
 
-    async function safeFetch(url, options) {
-      const res = await fetch(url, options);
-      const body = await res.json();
-      if (!res.ok) {
-        throw new Error(JSON.stringify(body));
-      }
-      return body;
+    function showAiOps(obj) {
+      document.getElementById("aiopsOutput").textContent = JSON.stringify(obj, null, 2);
     }
+
+    function showHuman(text) {
+      document.getElementById("aiopsHuman").textContent = text;
+    }
+
+    function yesNo(value) {
+      const clean = String(value).toLowerCase();
+      return clean === "true" ? "Yes" : "No";
+    }
+
+    function asList(items) {
+      if (!Array.isArray(items) || items.length === 0) {
+        return "- Not provided";
+      }
+      return items.map((item) => `- ${item}`).join("\n");
+    }
+
+    async function safeFetch(url, options = {}, timeoutMs = 5000) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+      try {
+        const res = await fetch(url, {
+          ...options,
+          signal: controller.signal
+        });
+
+        const body = await res.json();
+
+        if (!res.ok) {
+          throw new Error(JSON.stringify(body));
+        }
+
+        return body;
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    function renderAiOpsSummary(body) {
+      const analysis = body && body.analysis ? body.analysis : null;
+
+      if (!analysis) {
+        showHuman("No AI Ops analysis found. Wait for Alertmanager to trigger or refresh again.");
+        return;
+      }
+
+      const runbook = analysis.recommended_runbook_details || {};
+      const evidence = analysis.evidence || {};
+      const llm = analysis.llm_status || {};
+      const audit = body.audit || {};
+      const lifecycleStatus = body.lifecycle_status || "active";
+      const resolved = Boolean(body.resolved);
+
+      lastRecommendedRunbook = analysis.recommended_runbook || null;
+      lastRunbookDetails = runbook || null;
+
+      const summary = [
+        "Incident Status",
+        "---------------",
+        `Lifecycle: ${lifecycleStatus}`,
+        `Resolved: ${resolved ? "Yes" : "No"}`,
+        "",
+        "Problem Identified",
+        "------------------",
+        analysis.incident_summary || "No summary provided.",
+        "",
+        "Likely Root Cause",
+        "-----------------",
+        analysis.likely_root_cause || "No root cause provided.",
+        "",
+        "Evidence Observed",
+        "-----------------",
+        asList(evidence.symptoms),
+        "",
+        "Risk and Confidence",
+        "-------------------",
+        `Risk level: ${analysis.risk_level || "unknown"}`,
+        `Confidence: ${analysis.confidence || "unknown"}`,
+        `Approval required: ${yesNo(analysis.approval_required)}`,
+        "",
+        "Recommended Remediation",
+        "-----------------------",
+        `Runbook found: ${runbook.name || analysis.recommended_runbook || "not provided"}`,
+        `Runbook ID: ${analysis.recommended_runbook || "not provided"}`,
+        "",
+        "Next Operator Step",
+        "------------------",
+        resolved
+          ? "Incident has been remediated/verified. Review audit or close the incident."
+          : "Click “Show Remediation Runbook” to review exactly what the system will do before approving remediation.",
+        "",
+        "LLM and Audit",
+        "-------------",
+        `LLM called: ${llm.called ? "Yes" : "No"}`,
+        `LLM accepted: ${llm.accepted ? "Yes" : "No"}`,
+        `Fallback used: ${llm.fallback_used ? "Yes" : "No"}`,
+        `Model: ${llm.model || "not used / unavailable"}`,
+        `Audit event: ${audit.event_type || "not provided"}`,
+        `Audit time: ${audit.timestamp || "not provided"}`
+      ].join("\n");
+
+      showHuman(summary);
+    }
+
+    function renderRunbookDetails(runbook) {
+      if (!runbook || !runbook.id) {
+        showHuman("No approved remediation runbook is available for this incident.");
+        return;
+      }
+
+      const summary = [
+        "Remediation Runbook",
+        "-------------------",
+        `Name: ${runbook.name || runbook.id}`,
+        `Runbook ID: ${runbook.id}`,
+        `Risk: ${runbook.risk || "unknown"}`,
+        `Approval required: ${yesNo(runbook.approval_required)}`,
+        "",
+        "Why this runbook",
+        "----------------",
+        runbook.description || "No description provided.",
+        "",
+        "Steps Planned",
+        "-------------",
+        asList(runbook.steps),
+        "",
+        "Verification Plan",
+        "-----------------",
+        asList(runbook.verification_steps),
+        "",
+        "Next Operator Step",
+        "------------------",
+        "If the steps look safe, click “Approve & Run Remediation”. Local demo remediation will drain the mock queue backlog, then run verification checks."
+      ].join("\n");
+
+      showHuman(summary);
+    }
+
+    function renderApprovalSummary(body) {
+      const runbook = body.runbook || {};
+      const result = body.execution_result || {};
+      const audit = body.audit || {};
+      const verification = body.verification || {};
+      const incident = body.incident || {};
+      const checks = Array.isArray(verification.checks) ? verification.checks : [];
+
+      const verificationLines = checks.length
+        ? checks.map((check) => `- ${check.name}: ${check.status}`).join("\n")
+        : "- Verification was not run.";
+
+      const summary = [
+        "Incident Lifecycle",
+        "------------------",
+        `Lifecycle: ${incident.lifecycle_status || "updated"}`,
+        `Resolved: ${incident.resolved ? "Yes" : "No"}`,
+        incident.resolved_at ? `Resolved at: ${incident.resolved_at}` : "Resolved at: not set",
+        "",
+        "Remediation Executed",
+        "--------------------",
+        `Runbook: ${runbook.name || runbook.id || "unknown"}`,
+        `Runbook ID: ${runbook.id || "unknown"}`,
+        `Risk: ${runbook.risk || "unknown"}`,
+        "",
+        "Execution Result",
+        "----------------",
+        `Mode: ${body.execution_mode || "unknown"}`,
+        `Status: ${result.status || "unknown"}`,
+        result.message || "No execution message provided.",
+        "",
+        "Post-Runbook Verification",
+        "-------------------------",
+        `Verification status: ${verification.status || "not run"}`,
+        verification.summary || "No verification summary provided.",
+        "",
+        "Verification Checks",
+        "-------------------",
+        verificationLines,
+        "",
+        "Audit",
+        "-----",
+        `Audit event: ${audit.event_type || "not provided"}`,
+        `Audit time: ${audit.timestamp || "not provided"}`
+      ].join("\n");
+
+      showHuman(summary);
+    }
+
+    async function closeLatestIncident() {
+      try {
+        const body = await safeFetch(`${AIOPS_BASE}/incidents/close?closed_by=admin-demo`, {
+          method: "POST"
+        });
+
+        showHuman([
+          "Incident Closed",
+          "---------------",
+          `Lifecycle: ${body.incident?.lifecycle_status || "closed"}`,
+          `Closed by: ${body.incident?.closed_by || "admin-demo"}`,
+          `Closed at: ${body.incident?.closed_at || "not provided"}`,
+          "",
+          "Audit",
+          "-----",
+          `Audit event: ${body.audit?.event_type || "not provided"}`,
+          `Audit time: ${body.audit?.timestamp || "not provided"}`
+        ].join("\n"));
+
+        showAiOps(body);
+      } catch (err) {
+        showHuman("Failed to close latest incident.");
+        showAiOps({ error: String(err) });
+      }
+    }
+
 
     async function loadStatus() {
       try {
         const apiHealth = await safeFetch(`${API_BASE}/health`);
         const ingestionHealth = await safeFetch(`${INGESTION_BASE}/health`);
+        const aiopsHealth = await safeFetch(`${AIOPS_BASE}/health`);
         const venues = await safeFetch(`${API_BASE}/venues`);
         const devices = await safeFetch(`${API_BASE}/devices`);
+        const jobs = await safeFetch(`${API_BASE}/jobs`);
+        const backlog = await safeFetch(`${API_BASE}/ops/backlog`);
 
         document.getElementById("apiHealth").textContent = apiHealth.status;
         document.getElementById("ingestionHealth").textContent = ingestionHealth.status;
+        document.getElementById("aiopsHealth").textContent = aiopsHealth.status;
         document.getElementById("venues").textContent = venues.items.length;
         document.getElementById("devices").textContent = devices.items.length;
+        document.getElementById("totalJobsQueued").textContent = jobs.items.length;
+        document.getElementById("queueBacklog").textContent = backlog.queue_backlog;
+        document.getElementById("queueBacklogMeta").textContent = `Threshold: ${backlog.threshold} | Alert active: ${backlog.breached}`;
 
         show({
           status: "dashboard_loaded",
           api: apiHealth,
-          ingestion: ingestionHealth
+          ingestion: ingestionHealth,
+          aiops: aiopsHealth,
+          total_jobs_queued: jobs.items.length,
+          current_jobs_in_queue: backlog.queue_backlog,
+          backlog
         });
       } catch (err) {
         show({ error: String(err) });
@@ -215,6 +498,7 @@
           body: JSON.stringify(payload)
         });
         show(body);
+        await loadStatus();
       } catch (err) {
         show({ error: String(err) });
       }
@@ -234,6 +518,7 @@
           body: JSON.stringify(payload)
         });
         show(body);
+        await loadStatus();
       } catch (err) {
         show({ error: String(err) });
       }
@@ -254,6 +539,7 @@
           body: JSON.stringify(payload)
         });
         show(body);
+        await loadStatus();
       } catch (err) {
         show({ error: String(err) });
       }
@@ -273,9 +559,215 @@
           body: JSON.stringify(payload)
         });
         show(body);
+        await loadStatus();
       } catch (err) {
         show({ error: String(err) });
       }
+    }
+
+    async function generateQueueLoad() {
+      try {
+        showHuman("Generating queue load. Prometheus and Alertmanager will trigger AI Ops automatically. The incident panel auto-refreshes every 5 seconds.");
+        const body = await safeFetch(`${API_BASE}/ops/load/queue`, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ count: 10, job_type: "send_sms" })
+        });
+        show(body);
+        await loadStatus();
+      } catch (err) {
+        show({ error: String(err) });
+      }
+    }
+
+    function incidentKey(body) {
+      if (!body || !body.analysis) {
+        return body && body.status ? body.status : "empty";
+      }
+
+      const auditTime = body.audit && body.audit.timestamp ? body.audit.timestamp : "";
+      const lifecycle = body.lifecycle_status || "active";
+      const runbook = body.analysis.recommended_runbook || "";
+      return `${lifecycle}|${runbook}|${auditTime}`;
+    }
+
+    async function refreshLatestIncidentSilent() {
+      try {
+        const body = await safeFetch(`${AIOPS_BASE}/incidents/latest`);
+        const key = incidentKey(body);
+
+        if (key === latestIncidentStatusKey) {
+          return;
+        }
+
+        latestIncidentStatusKey = key;
+        latestIncident = body;
+        showAiOps(body);
+
+        if (body.analysis) {
+          renderAiOpsSummary(body);
+        } else if (body.status === "empty") {
+          showHuman([
+            "No Active AI Ops Incident",
+            "-------------------------",
+            body.message || "No active AI Ops incidents.",
+            "",
+            "Current State",
+            "-------------",
+            "The system is healthy or the latest incident has been closed.",
+            "Generate queue load to trigger a new alert-driven incident."
+          ].join("\n"));
+        }
+      } catch (err) {
+        // Silent polling should not spam the UI during container restarts.
+        console.warn("AI Ops polling failed", err);
+      }
+    }
+
+    function startIncidentPolling() {
+      if (incidentPollTimer) {
+        clearInterval(incidentPollTimer);
+      }
+
+      incidentPollTimer = setInterval(refreshLatestIncidentSilent, 5000);
+    }
+
+
+    async function refreshLatestIncident() {
+      try {
+        const body = await safeFetch(`${AIOPS_BASE}/incidents/latest`);
+        latestIncident = body;
+        showAiOps(body);
+
+        if (body.analysis) {
+          renderAiOpsSummary(body);
+        } else {
+          showHuman([
+            "No Active AI Ops Incident",
+            "-------------------------",
+            body.message || "No active AI Ops incidents.",
+            "",
+            "Current State",
+            "-------------",
+            "The latest incident may have been resolved and closed.",
+            "Use “Load AI Ops Audit” to view historical incidents.",
+            "",
+            "To trigger a new demo incident:",
+            "1. Click Generate Queue Load x10.",
+            "2. Wait for Prometheus and Alertmanager.",
+            "3. Click Refresh Latest AI Ops Incident."
+          ].join("\n"));
+        }
+      } catch (err) {
+        showHuman("Failed to refresh latest AI Ops incident.");
+        showAiOps({ error: String(err) });
+      }
+    }
+
+    async function showRemediationRunbook() {
+      try {
+        if (!lastRecommendedRunbook) {
+          showHuman("No recommended runbook found. Wait for an AI Ops incident or refresh latest incident.");
+          return;
+        }
+
+        if (lastRunbookDetails && lastRunbookDetails.id) {
+          renderRunbookDetails(lastRunbookDetails);
+          showAiOps({ runbook: lastRunbookDetails, source: "cached_incident_runbook_details" });
+          return;
+        }
+
+        showHuman("Loading remediation runbook...");
+        const body = await safeFetch(`${AIOPS_BASE}/runbooks/${lastRecommendedRunbook}`);
+        lastRunbookDetails = body.runbook;
+        renderRunbookDetails(body.runbook);
+        showAiOps(body);
+      } catch (err) {
+        showHuman("Failed to load remediation runbook.");
+        showAiOps({ error: String(err) });
+      }
+    }
+
+    async function approveAndRunRemediation() {
+      if (!lastRecommendedRunbook) {
+        showHuman("No recommended runbook found. Refresh latest incident first.");
+        return;
+      }
+
+      try {
+        const body = await safeFetch(`${AIOPS_BASE}/runbooks/approve`, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({
+            runbook_id: lastRecommendedRunbook,
+            approved_by: "admin-demo",
+            execute: true,
+            verify: true
+          })
+        });
+
+        renderApprovalSummary(body);
+        showAiOps(body);
+        await loadStatus();
+      } catch (err) {
+        showHuman("Runbook approval/remediation failed. Check raw JSON.");
+        showAiOps({ error: String(err) });
+      }
+    }
+
+    async function deployBadApiRelease() {
+      try {
+        showHuman("Deploying simulated bad API release. Prometheus and Alertmanager will trigger AI Ops automatically.");
+        const body = await safeFetch(`${API_BASE}/ops/faults/api-5xx/enable`, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ reason: "simulated bad deployment for AI Ops demo" })
+        });
+        show(body);
+        await loadStatus();
+      } catch (err) {
+        show({ error: String(err) });
+      }
+    }
+
+    async function markCameraOffline() {
+      try {
+        showHuman("Marking camera-01 offline. Prometheus and Alertmanager will trigger AI Ops automatically.");
+        const body = await safeFetch(`${API_BASE}/ops/devices/offline/mark`, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ device_id: "camera-01" })
+        });
+        show(body);
+        await loadStatus();
+      } catch (err) {
+        show({ error: String(err) });
+      }
+    }
+
+    async function generateApi5xxTraffic() {
+      const results = [];
+
+      for (let i = 0; i < 5; i++) {
+        try {
+          const res = await fetch(`${API_BASE}/ops/test-api`);
+          let body = null;
+          try {
+            body = await res.json();
+          } catch {
+            body = { raw: await res.text() };
+          }
+          results.push({ status: res.status, body });
+        } catch (err) {
+          results.push({ error: String(err) });
+        }
+      }
+
+      show({
+        status: "api_5xx_traffic_generated",
+        message: "Controlled traffic sent to /ops/test-api. If the API fault is active, these requests return 500 and appear in metrics.",
+        results
+      });
     }
 
     async function loadAudit() {
@@ -287,7 +779,20 @@
       }
     }
 
+    async function loadAiOpsAudit() {
+      try {
+        const body = await safeFetch(`${AIOPS_BASE}/audit`);
+        showHuman("Loaded AI Ops audit trail. Raw JSON shows incident, runbook, approval, remediation, and verification events.");
+        showAiOps(body);
+      } catch (err) {
+        showHuman("Failed to load AI Ops audit trail.");
+        showAiOps({ error: String(err) });
+      }
+    }
+
     loadStatus();
+    startIncidentPolling();
+    refreshLatestIncidentSilent();
   </script>
 </body>
 </html>
