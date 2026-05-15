@@ -212,11 +212,8 @@ Expected runbook:
 investigate_provider_failure
 ```
 
-What to explain in interview:
-
-```text
 This demonstrates metric-driven incident response. I can show the queue metric rising in Grafana, Prometheus firing the alert, Alertmanager sending it to AI Ops, and the agent recommending a pre-approved remediation runbook. After approval, the local backlog is drained and Grafana shows the metric recovering. The agent does not act blindly; it recommends, waits for approval, remediates safely, verifies recovery, and writes an audit record.
-```
+
 ---
 
 ## Running Services
