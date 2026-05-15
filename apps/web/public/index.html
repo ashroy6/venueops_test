@@ -1674,27 +1674,57 @@
 
     async function generateApi5xxTraffic() {
       const results = [];
+      let count500 = 0;
+      let count200 = 0;
+      let countOther = 0;
 
-      for (let i = 0; i < 5; i++) {
+      showHuman("Generating controlled API 5xx traffic against /ops/test-api. 500 responses are expected when the bad API release is active.");
+
+      for (let i = 0; i < 20; i++) {
         try {
-          const res = await fetch(`${API_BASE}/ops/test-api`);
+          const res = await fetch(`${API_BASE}/ops/test-api`, {
+            method: "GET",
+            cache: "no-store"
+          });
+
           let body = null;
           try {
             body = await res.json();
           } catch {
             body = { raw: await res.text() };
           }
-          results.push({ status: res.status, body });
+
+          if (res.status === 500) {
+            count500 += 1;
+          } else if (res.status === 200) {
+            count200 += 1;
+          } else {
+            countOther += 1;
+          }
+
+          results.push({ request: i + 1, status: res.status, body });
         } catch (err) {
-          results.push({ error: String(err) });
+          countOther += 1;
+          results.push({ request: i + 1, error: String(err) });
         }
       }
 
       show({
         status: "api_5xx_traffic_generated",
-        message: "Controlled traffic sent to /ops/test-api. If the API fault is active, these requests return 500 and appear in metrics.",
+        message: "Controlled traffic sent to /ops/test-api. HTTP 500 is expected when the simulated bad API release is active.",
+        summary: {
+          total_requests: results.length,
+          http_500_count: count500,
+          http_200_count: count200,
+          other_count: countOther
+        },
+        expected_result: count500 > 0
+          ? "API 5xx fault traffic generated successfully. Prometheus should detect this after the next scrape/evaluation cycle."
+          : "No HTTP 500 responses observed. Enable Bad API Release first, then generate API 5xx traffic again.",
         results
       });
+
+      await loadStatus();
     }
 
     async function loadAudit() {
