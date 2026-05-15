@@ -155,7 +155,68 @@ Local Grafana login:
 username: admin
 password: admin
 ```
+## 1. Test Queue Backlog Incident
 
+Use this when you want to show the agent reacting to a queue/provider style failure.
+
+In the UI:
+
+1. Open the VenueOps dashboard:
+
+   ```text
+   http://localhost:3000
+   ```
+
+2. Open Grafana in another browser tab:
+
+   ```text
+   http://localhost:3001
+   ```
+
+   Login:
+
+   ```text
+   username: admin
+   password: admin
+   ```
+
+3. In Grafana, open the VenueOps dashboard and watch the queue/backlog panels.
+
+4. Go back to the VenueOps dashboard and click **Generate Queue Load x10**.
+
+5. The app creates multiple local queue jobs.
+
+6. In Grafana, the queue/backlog graph should start going up.
+
+7. Prometheus detects the queue backlog.
+
+8. Alertmanager sends a `QueueBacklogHigh` alert to AI Ops.
+
+9. The AI Ops panel in the VenueOps UI should show a new active incident.
+
+10. Click **Show Remediation Runbook**.
+
+11. Review the recommended runbook.
+
+12. Click **Approve Remediation**.
+
+13. AI Ops safely reduces/drains the local mock backlog.
+
+14. Go back to Grafana and confirm the queue/backlog graph goes down after remediation.
+
+15. The incident should move toward resolved/recovered state.
+
+Expected runbook:
+
+```text
+investigate_provider_failure
+```
+
+What to explain in interview:
+
+```text
+This demonstrates metric-driven incident response. I can show the queue metric rising in Grafana, Prometheus firing the alert, Alertmanager sending it to AI Ops, and the agent recommending a pre-approved remediation runbook. After approval, the local backlog is drained and Grafana shows the metric recovering. The agent does not act blindly; it recommends, waits for approval, remediates safely, verifies recovery, and writes an audit record.
+```
 ---
 
 ## Running Services

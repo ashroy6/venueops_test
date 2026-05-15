@@ -1045,26 +1045,8 @@
       const evidence = analysis.evidence || {};
       const llm = analysis.llm_status || {};
       const audit = body.audit || {};
-      const remediation = body.remediation || {};
-      const executionResult = remediation.execution_result || {};
-      const verification = body.verification || {};
-      const checks = Array.isArray(verification.checks) ? verification.checks : [];
-
       const lifecycleStatus = body.lifecycle_status || "active";
       const resolved = Boolean(body.resolved);
-
-      const passedChecks = checks.filter((check) => String(check.status).toLowerCase() === "passed").length;
-      const failedChecks = checks.filter((check) => String(check.status).toLowerCase() === "failed").length;
-      const totalChecks = checks.length;
-
-      const verificationLines = checks.length
-        ? checks.map((check) => `- ${check.name}: ${check.status || "unknown"}`).join("\n")
-        : "- Verification has not run yet.";
-
-      const failedLines = checks
-        .filter((check) => String(check.status).toLowerCase() === "failed")
-        .map((check) => `- ${check.name}: ${check.status || "unknown"}`)
-        .join("\n");
 
       lastRecommendedRunbook = analysis.recommended_runbook || null;
       lastRunbookDetails = runbook || null;
@@ -1098,39 +1080,11 @@
         `Runbook found: ${runbook.name || analysis.recommended_runbook || "not provided"}`,
         `Runbook ID: ${analysis.recommended_runbook || "not provided"}`,
         "",
-        "Execution Result",
-        "----------------",
-        remediation.runbook_id
-          ? `Executed runbook: ${remediation.runbook_id}`
-          : "Executed runbook: not executed yet",
-        `Execution mode: ${remediation.execution_mode || "not executed yet"}`,
-        `Execution status: ${executionResult.status || "not executed yet"}`,
-        executionResult.message || "No execution message available yet.",
-        "",
-        "Post-Runbook Verification",
-        "-------------------------",
-        `Verification status: ${verification.status || "not run"}`,
-        `Resolved after verification: ${resolved ? "Yes" : "No"}`,
-        `Lifecycle after verification: ${lifecycleStatus}`,
-        `Checks passed: ${passedChecks}/${totalChecks}`,
-        `Checks failed: ${failedChecks}/${totalChecks}`,
-        verification.summary || "No verification summary available yet.",
-        "",
-        "Failed Verification Checks",
-        "--------------------------",
-        failedChecks > 0 ? failedLines : "- None",
-        "",
-        "Verification Checks",
-        "-------------------",
-        verificationLines,
-        "",
         "Next Operator Step",
         "------------------",
-        resolved && failedChecks === 0
-          ? "Incident has been remediated and verifier checks passed. Review audit or close the incident."
-          : verification.status === "failed"
-            ? "Verifier failed one or more checks. Review failed checks before closing the incident."
-            : "Click “Show Runbook” to review remediation, then approve and run.",
+        resolved
+          ? "Incident has been remediated/verified. Review audit or close the incident."
+          : "Click “Show Remediation Runbook” to review exactly what the system will do before approving remediation.",
         "",
         "LLM and Audit",
         "-------------",
@@ -1539,6 +1493,8 @@
           showHuman([
             "No Active AI Ops Incident",
             "-------------------------",
+            body.message || "No active AI Ops incidents.",
+            "",
             "Current State",
             "-------------",
             "The system is healthy or the latest incident has been closed.",
@@ -1573,6 +1529,8 @@
           showHuman([
             "No Active AI Ops Incident",
             "-------------------------",
+            body.message || "No active AI Ops incidents.",
+            "",
             "Current State",
             "-------------",
             "The latest incident may have been resolved and closed.",
