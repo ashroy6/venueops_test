@@ -17,3 +17,10 @@ resource_tags = {
 }
 
 app_gateway_backend_fqdn = "staging-aks-ingress.venueops.internal"
+
+redis_sku_name                      = "Premium"
+redis_family                        = "P"
+redis_capacity                      = 1
+redis_version                       = "6"
+redis_public_network_access_enabled = false
+redis_maxmemory_policy              = "volatile-lru"

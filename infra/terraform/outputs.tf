@@ -93,3 +93,24 @@ output "application_gateway_waf_policy_id" {
   description = "Application Gateway WAF policy ID."
   value       = module.application_gateway.waf_policy_id
 }
+
+output "redis_name" {
+  description = "Azure Cache for Redis name."
+  value       = module.redis.name
+}
+
+output "redis_hostname" {
+  description = "Azure Cache for Redis hostname."
+  value       = module.redis.hostname
+}
+
+output "redis_ssl_port" {
+  description = "Azure Cache for Redis SSL port."
+  value       = module.redis.ssl_port
+}
+
+output "redis_connection_string" {
+  description = "Azure Cache for Redis TLS connection string."
+  value       = module.redis.connection_string
+  sensitive   = true
+}

@@ -91,6 +91,22 @@ module "postgresql" {
   tags                = local.common_tags
 }
 
+module "redis" {
+  source = "./modules/redis"
+
+  name_prefix                   = local.name_prefix
+  location                      = module.resource_group.location
+  resource_group_name           = module.resource_group.name
+  subnet_id                     = module.network.private_data_subnet_id
+  sku_name                      = var.redis_sku_name
+  family                        = var.redis_family
+  capacity                      = var.redis_capacity
+  redis_version                 = var.redis_version
+  public_network_access_enabled = var.redis_public_network_access_enabled
+  maxmemory_policy              = var.redis_maxmemory_policy
+  tags                          = local.common_tags
+}
+
 
 module "application_gateway" {
   source = "./modules/application-gateway"
