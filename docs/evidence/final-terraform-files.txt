@@ -1,6 +1,6 @@
 # Terraform Files
 
-Generated at: 2026-05-12T14:35:12Z
+Generated at: 2026-05-18T13:40:02Z
 
 infra/terraform/.terraform.lock.hcl
 infra/terraform/.terraform/modules/modules.json
@@ -40,6 +40,9 @@ infra/terraform/modules/network/variables.tf
 infra/terraform/modules/postgresql/main.tf
 infra/terraform/modules/postgresql/outputs.tf
 infra/terraform/modules/postgresql/variables.tf
+infra/terraform/modules/redis/main.tf
+infra/terraform/modules/redis/outputs.tf
+infra/terraform/modules/redis/variables.tf
 infra/terraform/modules/resource-group/main.tf
 infra/terraform/modules/resource-group/outputs.tf
 infra/terraform/modules/resource-group/variables.tf

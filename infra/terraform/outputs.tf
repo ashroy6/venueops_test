@@ -8,9 +8,29 @@ output "vnet_id" {
   value       = module.network.vnet_id
 }
 
+output "public_subnet_id" {
+  description = "Public/DMZ subnet ID used by Azure Application Gateway WAF."
+  value       = module.network.public_subnet_id
+}
+
+output "private_aks_subnet_id" {
+  description = "Private AKS subnet ID."
+  value       = module.network.private_aks_subnet_id
+}
+
+output "private_data_subnet_id" {
+  description = "Private data subnet ID."
+  value       = module.network.private_data_subnet_id
+}
+
+output "private_endpoint_subnet_id" {
+  description = "Private endpoint subnet ID."
+  value       = module.network.private_endpoint_subnet_id
+}
+
 output "aks_subnet_id" {
-  description = "AKS subnet ID."
-  value       = module.network.aks_subnet_id
+  description = "Backward-compatible AKS subnet ID output."
+  value       = module.network.private_aks_subnet_id
 }
 
 output "aks_cluster_name" {
@@ -59,7 +79,6 @@ output "application_insights_connection_string" {
   sensitive   = true
 }
 
-
 output "application_gateway_name" {
   description = "Application Gateway name."
   value       = module.application_gateway.name
@@ -73,4 +92,25 @@ output "application_gateway_public_ip" {
 output "application_gateway_waf_policy_id" {
   description = "Application Gateway WAF policy ID."
   value       = module.application_gateway.waf_policy_id
+}
+
+output "redis_name" {
+  description = "Azure Cache for Redis name."
+  value       = module.redis.name
+}
+
+output "redis_hostname" {
+  description = "Azure Cache for Redis hostname."
+  value       = module.redis.hostname
+}
+
+output "redis_ssl_port" {
+  description = "Azure Cache for Redis SSL port."
+  value       = module.redis.ssl_port
+}
+
+output "redis_connection_string" {
+  description = "Azure Cache for Redis TLS connection string."
+  value       = module.redis.connection_string
+  sensitive   = true
 }

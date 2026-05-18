@@ -1,6 +1,6 @@
 # Final Validation Evidence
 
-Generated at: 2026-05-12T14:35:12Z
+Generated at: 2026-05-18T13:40:02Z
 
 Running final VenueOps validation...
 
@@ -23,16 +23,16 @@ Checking devices endpoint: http://localhost:8000/devices
 PASSED: devices endpoint
 Posting device log ingestion: http://localhost:8001/ingest/logs
 PASSED: device log ingestion
-{"status":"accepted","event_id":"a7f238e6-39b3-4f15-88b3-7becb4fcdfb5","message":"Device log accepted into ingestion stream"}
+{"status":"accepted","event_id":"01b1143d-e579-4f83-89cd-ae9fabd81958","message":"Device log accepted into ingestion stream"}
 Posting SMS job queue: http://localhost:8000/notifications/sms
 PASSED: SMS job queue
-{"status":"queued","job":{"job_id":"c685e059-76a3-4b58-8b81-0274109e3dcd","job_type":"send_sms","created_at_ms":1778596512738,"status":"queued","payload":{"guest_id":"guest-smoke-001","phone_number":"+440000000000","message":"Smoke test SMS"}}}
+{"status":"queued","job":{"job_id":"9e85120e-1691-4dae-a0ca-8686ea75afea","job_type":"send_sms","created_at_ms":1779111602307,"status":"queued","payload":{"guest_id":"guest-smoke-001","phone_number":"+440000000000","message":"Smoke test SMS"}}}
 Posting email job queue: http://localhost:8000/notifications/email
 PASSED: email job queue
-{"status":"queued","job":{"job_id":"41a078ca-3757-482c-a446-c82dcc6c7582","job_type":"send_email","created_at_ms":1778596512755,"status":"queued","payload":{"guest_id":"guest-smoke-001","email":"guest@example.com","subject":"Smoke test email","body":"Smoke test body"}}}
+{"status":"queued","job":{"job_id":"89e528d1-46b1-4d9a-a7c4-659d62820f4c","job_type":"send_email","created_at_ms":1779111602326,"status":"queued","payload":{"guest_id":"guest-smoke-001","email":"guest@example.com","subject":"Smoke test email","body":"Smoke test body"}}}
 Posting video job queue: http://localhost:8000/videos/process
 PASSED: video job queue
-{"status":"queued","job":{"job_id":"c1348191-d933-4c1c-8656-bcdb869f23b9","job_type":"process_video","created_at_ms":1778596512771,"status":"queued","payload":{"venue_id":"venue-london-001","source_blob":"landing/smoke-test-video.mp4","requested_by":"smoke-test"}}}
+{"status":"queued","job":{"job_id":"eaa2fd01-031f-4660-a2e0-10128b3a4aaa","job_type":"process_video","created_at_ms":1779111602345,"status":"queued","payload":{"venue_id":"venue-london-001","source_blob":"landing/smoke-test-video.mp4","requested_by":"smoke-test"}}}
 Waiting for workers to process queued messages...
 
 SMOKE TEST PASSED

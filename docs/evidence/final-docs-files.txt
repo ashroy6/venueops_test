@@ -1,14 +1,17 @@
 # Documentation Files
 
-Generated at: 2026-05-12T14:35:12Z
+Generated at: 2026-05-18T13:40:02Z
 
 docs/aks-hardening.md
 docs/architecture.md
 docs/automation.md
+docs/branch-protection.md
 docs/cloudflare-app-gateway.md
 docs/database.md
 docs/diagrams/architecture.mmd
 docs/diagrams/local-demo.mmd
+docs/diagrams/venueops_cloud.png
+docs/diagrams/venueops_local.png
 docs/evidence/README.md
 docs/evidence/backend-api-health.txt
 docs/evidence/batch-10-cloudflare-appgateway.txt
@@ -37,9 +40,14 @@ docs/evidence/video-worker-evidence.txt
 docs/final-interview-script.md
 docs/interview-walkthrough.md
 docs/observability.md
+docs/production-approval.md
 docs/reliability.md
 docs/resiliency.md
 docs/scalability.md
+docs/screenshots/final_validation.png
+docs/screenshots/github_pipelines.png
+docs/screenshots/grafanna.png
+docs/screenshots/localhost_ui.png
 docs/security.md
 docs/submission-checklist.md
 docs/tradeoffs.md

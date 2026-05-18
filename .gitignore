@@ -23,6 +23,8 @@ tmp/
 Thumbs.db
 .vscode/
 .idea/
+uploads/
+dist/
 
 # Evidence generated locally can stay if wanted.
 # If you want smaller repo later, ignore:

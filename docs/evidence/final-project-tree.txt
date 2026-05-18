@@ -1,10 +1,31 @@
 # Final Project Tree
 
-Generated at: 2026-05-12T14:35:12Z
+Generated at: 2026-05-18T13:40:02Z
 
 .
 ├── Makefile
 ├── README.md
+├── aiops
+│   ├── Dockerfile
+│   ├── README.md
+│   ├── requirements.txt
+│   ├── runbooks
+│   │   ├── investigate_device_connectivity.yaml
+│   │   ├── investigate_provider_failure.yaml
+│   │   ├── restart_api.yaml
+│   │   ├── rollback_release.yaml
+│   │   └── scale_ingestion_api.yaml
+│   ├── src
+│   │   ├── audit_store.py
+│   │   ├── config.py
+│   │   ├── evidence_collector.py
+│   │   ├── incident_analyzer.py
+│   │   ├── main.py
+│   │   ├── ollama_client.py
+│   │   ├── prometheus_client.py
+│   │   ├── runbook_registry.py
+│   │   └── verifier.py
+│   └── tests
 ├── apps
 │   ├── api
 │   │   ├── Dockerfile
@@ -13,6 +34,7 @@ Generated at: 2026-05-12T14:35:12Z
 │   │   │   ├── db.py
 │   │   │   ├── main.py
 │   │   │   ├── messaging.py
+│   │   │   ├── ops_state.py
 │   │   │   └── telemetry.py
 │   │   └── tests
 │   ├── ingestion-api
@@ -28,6 +50,17 @@ Generated at: 2026-05-12T14:35:12Z
 │   │   ├── nginx.conf
 │   │   ├── public
 │   │   │   ├── health.html
+│   │   │   ├── index.backup-before-api5xx-autostart.html
+│   │   │   ├── index.backup-before-compact-status.html
+│   │   │   ├── index.backup-before-compact-top.html
+│   │   │   ├── index.backup-before-dedupe-empty-aiops.html
+│   │   │   ├── index.backup-before-highlight-order-fix.html
+│   │   │   ├── index.backup-before-layout-v2.html
+│   │   │   ├── index.backup-before-status-api-device-fields.html
+│   │   │   ├── index.backup-before-ui-polish.html
+│   │   │   ├── index.backup-before-ui-v3.html
+│   │   │   ├── index.backup-before-verifier-in-latest-summary.html
+│   │   │   ├── index.backup-before-verifier-summary.html
 │   │   │   └── index.html
 │   │   ├── src
 │   │   └── tests
@@ -51,17 +84,21 @@ Generated at: 2026-05-12T14:35:12Z
 │   ├── dev
 │   ├── prod
 │   └── staging
+├── dist
 ├── docker-compose.yml
 ├── docs
 │   ├── aks-hardening.md
 │   ├── architecture.md
 │   ├── automation.md
+│   ├── branch-protection.md
 │   ├── cloudflare-app-gateway.md
 │   ├── database.md
 │   ├── decisions
 │   ├── diagrams
 │   │   ├── architecture.mmd
-│   │   └── local-demo.mmd
+│   │   ├── local-demo.mmd
+│   │   ├── venueops_cloud.png
+│   │   └── venueops_local.png
 │   ├── evidence
 │   │   ├── README.md
 │   │   ├── backend-api-health.txt
@@ -72,7 +109,13 @@ Generated at: 2026-05-12T14:35:12Z
 │   │   ├── batch-9-1-local-grafana-prometheus.txt
 │   │   ├── docker-compose-status.txt
 │   │   ├── docs-inventory.txt
+│   │   ├── final-docker-compose-status.txt
+│   │   ├── final-docs-files.txt
+│   │   ├── final-github-actions.txt
+│   │   ├── final-helm-files.txt
 │   │   ├── final-project-tree.txt
+│   │   ├── final-prometheus-targets.txt
+│   │   ├── final-terraform-files.txt
 │   │   ├── final-validation.txt
 │   │   ├── github-actions-workflows.txt
 │   │   ├── helm-lint.txt
@@ -85,11 +128,16 @@ Generated at: 2026-05-12T14:35:12Z
 │   ├── final-interview-script.md
 │   ├── interview-walkthrough.md
 │   ├── observability.md
+│   ├── production-approval.md
 │   ├── reliability.md
 │   ├── resiliency.md
 │   ├── runbooks
 │   ├── scalability.md
 │   ├── screenshots
+│   │   ├── final_validation.png
+│   │   ├── github_pipelines.png
+│   │   ├── grafanna.png
+│   │   └── localhost_ui.png
 │   ├── security.md
 │   ├── submission-checklist.md
 │   └── tradeoffs.md
@@ -161,6 +209,8 @@ Generated at: 2026-05-12T14:35:12Z
 │       ├── logs
 │       └── videos
 ├── observability
+│   ├── alertmanager
+│   │   └── alertmanager.yml
 │   ├── grafana
 │   │   ├── dashboards
 │   │   │   └── venueops-overview.json
@@ -183,18 +233,22 @@ Generated at: 2026-05-12T14:35:12Z
 │   └── shared
 │       └── src
 ├── scripts
+│   ├── build-evidence-pack.sh
 │   ├── final-evidence.sh
 │   ├── final-validate.sh
 │   ├── generate-evidence.sh
 │   ├── install-keda.sh
 │   ├── local-down.sh
 │   ├── local-up.sh
+│   ├── post-deploy-smoke.sh
 │   └── smoke-test.sh
 ├── tests
 │   ├── integration
 │   ├── load
 │   ├── security
 │   └── smoke
-└── tools
+├── tools
+├── uploads
+└── venueops-full-review.zip
 
-111 directories, 82 files
+118 directories, 129 files
