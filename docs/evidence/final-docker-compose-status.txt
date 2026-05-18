@@ -1,13 +1,16 @@
 # Docker Compose Status
 
-Generated at: 2026-05-12T14:35:12Z
+Generated at: 2026-05-18T13:40:02Z
 
-NAME                           IMAGE                                COMMAND                  SERVICE               CREATED          STATUS                    PORTS
-venueops-api                   interview-test-api                   "uvicorn src.main:ap…"   api                   14 minutes ago   Up 14 minutes (healthy)   0.0.0.0:8000->8000/tcp, :::8000->8000/tcp
-venueops-grafana               grafana/grafana:11.4.0               "/run.sh"                grafana               14 minutes ago   Up 14 minutes             0.0.0.0:3001->3000/tcp, [::]:3001->3000/tcp
-venueops-ingestion-api         interview-test-ingestion-api         "uvicorn src.main:ap…"   ingestion-api         14 minutes ago   Up 14 minutes (healthy)   0.0.0.0:8001->8001/tcp, :::8001->8001/tcp
-venueops-log-processor         interview-test-log-processor         "python -m src.worker"   log-processor         14 minutes ago   Up 14 minutes             0.0.0.0:9101->9101/tcp, :::9101->9101/tcp
-venueops-notification-worker   interview-test-notification-worker   "python -m src.worker"   notification-worker   14 minutes ago   Up 14 minutes             0.0.0.0:9103->9103/tcp, :::9103->9103/tcp
-venueops-prometheus            prom/prometheus:v3.0.1               "/bin/prometheus --c…"   prometheus            14 minutes ago   Up 14 minutes             0.0.0.0:9090->9090/tcp, :::9090->9090/tcp
-venueops-video-processor       interview-test-video-processor       "python -m src.worker"   video-processor       14 minutes ago   Up 14 minutes             0.0.0.0:9102->9102/tcp, :::9102->9102/tcp
-venueops-web                   interview-test-web                   "/docker-entrypoint.…"   web                   14 minutes ago   Up 14 minutes (healthy)   0.0.0.0:3000->80/tcp, [::]:3000->80/tcp
+NAME                                   IMAGE                                COMMAND                  SERVICE               CREATED         STATUS                   PORTS
+interview-test-aiops-1                 interview-test-aiops                 "uvicorn src.main:ap…"   aiops                 2 minutes ago   Up 2 minutes             0.0.0.0:8010->8010/tcp, :::8010->8010/tcp
+interview-test-alertmanager-1          prom/alertmanager:v0.27.0            "/bin/alertmanager -…"   alertmanager          2 minutes ago   Up 2 minutes             0.0.0.0:9093->9093/tcp, :::9093->9093/tcp
+interview-test-api-1                   interview-test-api                   "uvicorn src.main:ap…"   api                   2 minutes ago   Up 2 minutes (healthy)   0.0.0.0:8000->8000/tcp, :::8000->8000/tcp
+interview-test-grafana-1               grafana/grafana:11.4.0               "/run.sh"                grafana               2 minutes ago   Up 2 minutes             0.0.0.0:3001->3000/tcp, [::]:3001->3000/tcp
+interview-test-ingestion-api-1         interview-test-ingestion-api         "uvicorn src.main:ap…"   ingestion-api         2 minutes ago   Up 2 minutes (healthy)   0.0.0.0:8001->8001/tcp, :::8001->8001/tcp
+interview-test-log-processor-1         interview-test-log-processor         "python -m src.worker"   log-processor         2 minutes ago   Up 2 minutes             0.0.0.0:9101->9101/tcp, :::9101->9101/tcp
+interview-test-notification-worker-1   interview-test-notification-worker   "python -m src.worker"   notification-worker   2 minutes ago   Up 2 minutes             0.0.0.0:9103->9103/tcp, :::9103->9103/tcp
+interview-test-ollama-1                ollama/ollama:latest                 "/bin/ollama serve"      ollama                2 minutes ago   Up 2 minutes             11434/tcp
+interview-test-prometheus-1            prom/prometheus:v3.0.1               "/bin/prometheus --c…"   prometheus            2 minutes ago   Up 2 minutes             0.0.0.0:9090->9090/tcp, :::9090->9090/tcp
+interview-test-video-processor-1       interview-test-video-processor       "python -m src.worker"   video-processor       2 minutes ago   Up 2 minutes             0.0.0.0:9102->9102/tcp, :::9102->9102/tcp
+interview-test-web-1                   interview-test-web                   "/docker-entrypoint.…"   web                   2 minutes ago   Up 2 minutes (healthy)   0.0.0.0:3000->80/tcp, [::]:3000->80/tcp
