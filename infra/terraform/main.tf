@@ -29,8 +29,9 @@ module "network" {
   location                     = module.resource_group.location
   resource_group_name          = module.resource_group.name
   vnet_address_space           = var.vnet_address_space
-  aks_subnet_cidr              = var.aks_subnet_cidr
-  app_gateway_subnet_cidr      = var.app_gateway_subnet_cidr
+  public_subnet_cidr           = var.public_subnet_cidr
+  private_aks_subnet_cidr      = var.private_aks_subnet_cidr
+  private_data_subnet_cidr     = var.private_data_subnet_cidr
   private_endpoint_subnet_cidr = var.private_endpoint_subnet_cidr
   tags                         = local.common_tags
 }
@@ -97,7 +98,7 @@ module "application_gateway" {
   name_prefix           = local.name_prefix
   location              = module.resource_group.location
   resource_group_name   = module.resource_group.name
-  app_gateway_subnet_id = module.network.app_gateway_subnet_id
+  app_gateway_subnet_id = module.network.public_subnet_id
   backend_fqdn          = var.app_gateway_backend_fqdn
   tags                  = local.common_tags
 }
@@ -117,7 +118,7 @@ module "aks" {
   name_prefix                = local.name_prefix
   location                   = module.resource_group.location
   resource_group_name        = module.resource_group.name
-  aks_subnet_id              = module.network.aks_subnet_id
+  aks_subnet_id              = module.network.private_aks_subnet_id
   acr_id                     = module.acr.id
   log_analytics_workspace_id = module.monitoring.log_analytics_workspace_id
   tenant_id                  = data.azurerm_client_config.current.tenant_id

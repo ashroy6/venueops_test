@@ -32,22 +32,28 @@ variable "vnet_address_space" {
   default     = ["10.40.0.0/16"]
 }
 
-variable "aks_subnet_cidr" {
-  description = "AKS subnet CIDR range."
+variable "public_subnet_cidr" {
+  description = "Public/DMZ subnet CIDR range for Azure Application Gateway WAF."
   type        = string
   default     = "10.40.1.0/24"
 }
 
-variable "app_gateway_subnet_cidr" {
-  description = "Application Gateway subnet CIDR range."
+variable "private_aks_subnet_cidr" {
+  description = "Private AKS subnet CIDR range for AKS node pools."
   type        = string
   default     = "10.40.2.0/24"
 }
 
-variable "private_endpoint_subnet_cidr" {
-  description = "Private endpoint subnet CIDR range."
+variable "private_data_subnet_cidr" {
+  description = "Private data subnet CIDR range for database/cache/data services."
   type        = string
   default     = "10.40.3.0/24"
+}
+
+variable "private_endpoint_subnet_cidr" {
+  description = "Private endpoint subnet CIDR range for Azure Private Link endpoints."
+  type        = string
+  default     = "10.40.4.0/24"
 }
 
 variable "cloudflare_enabled" {
@@ -67,7 +73,6 @@ variable "app_hostname" {
   type        = string
   default     = "venueops.example.com"
 }
-
 
 variable "app_gateway_backend_fqdn" {
   description = "Backend FQDN used by Application Gateway to reach AKS ingress. Replace with real AKS ingress FQDN/IP during live deployment."

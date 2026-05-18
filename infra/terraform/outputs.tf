@@ -8,9 +8,29 @@ output "vnet_id" {
   value       = module.network.vnet_id
 }
 
+output "public_subnet_id" {
+  description = "Public/DMZ subnet ID used by Azure Application Gateway WAF."
+  value       = module.network.public_subnet_id
+}
+
+output "private_aks_subnet_id" {
+  description = "Private AKS subnet ID."
+  value       = module.network.private_aks_subnet_id
+}
+
+output "private_data_subnet_id" {
+  description = "Private data subnet ID."
+  value       = module.network.private_data_subnet_id
+}
+
+output "private_endpoint_subnet_id" {
+  description = "Private endpoint subnet ID."
+  value       = module.network.private_endpoint_subnet_id
+}
+
 output "aks_subnet_id" {
-  description = "AKS subnet ID."
-  value       = module.network.aks_subnet_id
+  description = "Backward-compatible AKS subnet ID output."
+  value       = module.network.private_aks_subnet_id
 }
 
 output "aks_cluster_name" {
@@ -58,7 +78,6 @@ output "application_insights_connection_string" {
   value       = module.monitoring.application_insights_connection_string
   sensitive   = true
 }
-
 
 output "application_gateway_name" {
   description = "Application Gateway name."
