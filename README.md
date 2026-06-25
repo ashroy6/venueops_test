@@ -107,8 +107,6 @@ Local Docker Compose testing setup.
 
 ## Local Demo
 
-## Local Demo
-
 Clone the repository and enter the project directory:
 
 ```bash
