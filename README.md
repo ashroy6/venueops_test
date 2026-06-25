@@ -179,8 +179,7 @@ make down
 
 The Ollama model is stored in a Docker volume, so it normally needs to be downloaded only once.
 
-```
-## 1. Test Queue Backlog Incident
+### Test Queue Backlog Incident
 
 Use this when you want to show the agent reacting to a queue/provider style failure.
 
