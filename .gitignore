@@ -29,3 +29,4 @@ dist/
 # Evidence generated locally can stay if wanted.
 # If you want smaller repo later, ignore:
 # docs/evidence/
+*.zip
