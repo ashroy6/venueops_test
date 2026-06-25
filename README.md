@@ -110,8 +110,8 @@ Local Docker Compose testing setup.
 Clone the repository and enter the project directory:
 
 ```bash
-git clone https://github.com/ashroy6/interview-test.git
-cd interview-test
+git clone https://github.com/ashroy6/venueops_test.git
+cd venueops_test
 ```
 
 Start the complete local platform:
