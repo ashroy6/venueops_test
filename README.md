@@ -107,37 +107,50 @@ Local Docker Compose testing setup.
 
 ## Local Demo
 
-Start the local platform:
+Clone the repository and enter the project directory:
+
+```bash
+git clone https://github.com/ashroy6/venueops_test.git
+cd venueops_test
+```
+
+Start the complete local platform:
 
 ```bash
 make up
 ```
 
-Run smoke tests:
+On the first run, download the Ollama model used by the AI Ops service:
+
+```bash
+docker compose exec ollama ollama pull llama3.2:1b
+```
+
+Confirm that the model is available:
+
+```bash
+docker compose exec ollama ollama list
+```
+
+Check that all containers are running:
+
+```bash
+docker compose ps
+```
+
+Run the smoke tests:
 
 ```bash
 make smoke
 ```
 
-Generate evidence:
-
-```bash
-make evidence
-```
-
-Run final validation:
+Run the full project validation:
 
 ```bash
 bash scripts/final-validate.sh
 ```
 
-Generate final evidence pack:
-
-```bash
-bash scripts/final-evidence.sh
-```
-
-Open locally:
+Open the local services:
 
 ```text
 Web / Admin UI:  http://localhost:3000
@@ -152,10 +165,19 @@ Grafana:         http://localhost:3001
 Local Grafana login:
 
 ```text
-username: admin
-password: admin
+Username: admin
+Password: admin
 ```
-## 1. Test Queue Backlog Incident
+
+Stop the local platform:
+
+```bash
+make down
+```
+
+The Ollama model is stored in a Docker volume, so it normally needs to be downloaded only once.
+
+### Test Queue Backlog Incident
 
 Use this when you want to show the agent reacting to a queue/provider style failure.
 
