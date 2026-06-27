@@ -160,7 +160,7 @@ Password: admin
 Stop the local platform:
 
 ```bash
-make down
+docker compose down
 ```
 
 The Ollama model is stored in a Docker volume, so it normally needs to be downloaded only once.
