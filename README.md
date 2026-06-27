@@ -113,12 +113,12 @@ Clone the repository and enter the project directory:
 git clone https://github.com/ashroy6/venueops_test.git
 cd venueops_test
 ```
-
-Start the complete local platform:
+Open Docker Desktop
 
 ```bash
-make up
+docker conmpose up --build -d
 ```
+Start the complete local platform:
 
 On the first run, download the Ollama model used by the AI Ops service:
 
@@ -136,18 +136,6 @@ Check that all containers are running:
 
 ```bash
 docker compose ps
-```
-
-Run the smoke tests:
-
-```bash
-make smoke
-```
-
-Run the full project validation:
-
-```bash
-bash scripts/final-validate.sh
 ```
 
 Open the local services:
